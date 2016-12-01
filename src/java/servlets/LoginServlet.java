@@ -67,8 +67,12 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // Get info from form
         String user = request.getParameter("user");
         String password = request.getParameter("password");
+        
+        String pw = new String();
+        String query;
             
         try {
             try {
@@ -83,23 +87,41 @@ public class LoginServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
-            String query;
             query = "SELECT EmailAddress, password FROM User WHERE (EmailAddress = '" +user+ 
                     "' AND password = '" +password+ "');";
             try {
                 ResultSet rs = stmt.executeQuery(query) ;
-                String first = rs.getString("password");
-                System.out.println(first);
+                while (rs.next()) {
+                    pw = rs.getString("password");
+                }    
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }            
+            }     
+            
+            if (pw != null && pw.equals(password)) {
+            // success, the username and password checks out. Grab 
+            // all information, and store it in the session.
+            
+                String query1 = "SELECT * FROM User WHERE (EmailAddress = '" +user+ 
+                        "' AND password = '" +password+ "');";
+            
+                try {
+                    ResultSet rs = stmt.executeQuery(query1) ;
+                    while (rs.next()) {
+                        
+                    }
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
        
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
      *
      * @return a String containing servlet description

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditPageTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditPageLabel_pageID}" for="pageID" />
+                    <h:inputText id="pageID" value="#{pageController.selected.pageID}" title="#{bundle.EditPageTitle_pageID}" required="true" requiredMessage="#{bundle.EditPageRequiredMessage_pageID}"/>
+                    <h:outputLabel value="#{bundle.EditPageLabel_postCount}" for="postCount" />
+                    <h:inputText id="postCount" value="#{pageController.selected.postCount}" title="#{bundle.EditPageTitle_postCount}" required="true" requiredMessage="#{bundle.EditPageRequiredMessage_postCount}"/>
+                    <h:outputLabel value="#{bundle.EditPageLabel_grouppage}" for="grouppage" />
+                    <h:selectOneMenu id="grouppage" value="#{pageController.selected.grouppage}" title="#{bundle.EditPageTitle_grouppage}" >
+                        <f:selectItems value="#{grouppageController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditPageLabel_personalpage}" for="personalpage" />
+                    <h:selectOneMenu id="personalpage" value="#{pageController.selected.personalpage}" title="#{bundle.EditPageTitle_personalpage}" >
+                        <f:selectItems value="#{personalpageController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{pageController.update}" value="#{bundle.EditPageSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditPageViewLink}"/>
+                <br />
+                <h:commandLink action="#{pageController.prepareList}" value="#{bundle.EditPageShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditPageIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

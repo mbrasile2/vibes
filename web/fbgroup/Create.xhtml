@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateFbgroupTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateFbgroupLabel_groupID}" for="groupID" />
+                    <h:inputText id="groupID" value="#{fbgroupController.selected.groupID}" title="#{bundle.CreateFbgroupTitle_groupID}" required="true" requiredMessage="#{bundle.CreateFbgroupRequiredMessage_groupID}"/>
+                    <h:outputLabel value="#{bundle.CreateFbgroupLabel_groupName}" for="groupName" />
+                    <h:inputText id="groupName" value="#{fbgroupController.selected.groupName}" title="#{bundle.CreateFbgroupTitle_groupName}" />
+                    <h:outputLabel value="#{bundle.CreateFbgroupLabel_type}" for="type" />
+                    <h:inputText id="type" value="#{fbgroupController.selected.type}" title="#{bundle.CreateFbgroupTitle_type}" />
+                    <h:outputLabel value="#{bundle.CreateFbgroupLabel_owner}" for="owner" />
+                    <h:selectOneMenu id="owner" value="#{fbgroupController.selected.owner}" title="#{bundle.CreateFbgroupTitle_owner}" required="true" requiredMessage="#{bundle.CreateFbgroupRequiredMessage_owner}">
+                        <f:selectItems value="#{userController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateFbgroupLabel_pageID}" for="pageID" />
+                    <h:selectOneMenu id="pageID" value="#{fbgroupController.selected.pageID}" title="#{bundle.CreateFbgroupTitle_pageID}" required="true" requiredMessage="#{bundle.CreateFbgroupRequiredMessage_pageID}">
+                        <f:selectItems value="#{pageController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{fbgroupController.create}" value="#{bundle.CreateFbgroupSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{fbgroupController.prepareList}" value="#{bundle.CreateFbgroupShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateFbgroupIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditGrouppageTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditGrouppageLabel_pageID}" for="pageID" />
+                    <h:inputText id="pageID" value="#{grouppageController.selected.pageID}" title="#{bundle.EditGrouppageTitle_pageID}" required="true" requiredMessage="#{bundle.EditGrouppageRequiredMessage_pageID}"/>
+                    <h:outputLabel value="#{bundle.EditGrouppageLabel_page}" for="page" />
+                    <h:selectOneMenu id="page" value="#{grouppageController.selected.page}" title="#{bundle.EditGrouppageTitle_page}" required="true" requiredMessage="#{bundle.EditGrouppageRequiredMessage_page}">
+                        <f:selectItems value="#{pageController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditGrouppageLabel_belongsTo}" for="belongsTo" />
+                    <h:selectOneMenu id="belongsTo" value="#{grouppageController.selected.belongsTo}" title="#{bundle.EditGrouppageTitle_belongsTo}" required="true" requiredMessage="#{bundle.EditGrouppageRequiredMessage_belongsTo}">
+                        <f:selectItems value="#{fbgroupController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{grouppageController.update}" value="#{bundle.EditGrouppageSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditGrouppageViewLink}"/>
+                <br />
+                <h:commandLink action="#{grouppageController.prepareList}" value="#{bundle.EditGrouppageShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditGrouppageIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

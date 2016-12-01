@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateMessageTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateMessageLabel_messageID}" for="messageID" />
+                    <h:inputText id="messageID" value="#{messageController.selected.messageID}" title="#{bundle.CreateMessageTitle_messageID}" required="true" requiredMessage="#{bundle.CreateMessageRequiredMessage_messageID}"/>
+                    <h:outputLabel value="#{bundle.CreateMessageLabel_content}" for="content" />
+                    <h:inputText id="content" value="#{messageController.selected.content}" title="#{bundle.CreateMessageTitle_content}" />
+                    <h:outputLabel value="#{bundle.CreateMessageLabel_messageDate}" for="messageDate" />
+                    <h:inputText id="messageDate" value="#{messageController.selected.messageDate}" title="#{bundle.CreateMessageTitle_messageDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateMessageLabel_sender}" for="sender" />
+                    <h:selectOneMenu id="sender" value="#{messageController.selected.sender}" title="#{bundle.CreateMessageTitle_sender}" >
+                        <f:selectItems value="#{userController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateMessageLabel_receiver}" for="receiver" />
+                    <h:selectOneMenu id="receiver" value="#{messageController.selected.receiver}" title="#{bundle.CreateMessageTitle_receiver}" >
+                        <f:selectItems value="#{userController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{messageController.create}" value="#{bundle.CreateMessageSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{messageController.prepareList}" value="#{bundle.CreateMessageShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateMessageIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
