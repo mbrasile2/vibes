@@ -14,5 +14,9 @@
     <body>
         <h1>Vibe</h1>
         <hr>
+        
+        <div>
+            <input type='button' value = 'Make a new Group' onclick="location.href='./newgroup.jsp'">
+        </div>
     </body>
 </html>
