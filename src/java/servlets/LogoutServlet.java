@@ -34,7 +34,7 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.invalidate();
         
-        response.sendRedirect("/Vibe-cse305/");
+        response.sendRedirect("/vibe/");
         
         }
     

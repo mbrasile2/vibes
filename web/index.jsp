@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,7 +32,15 @@
             <input type='button' value = 'Logout' onclick="location.href='./logout'">
             <hr>
             Welcome ${user.firstName} ${user.lastName}!
-            
+            <div>
+                <input type='button' value = 'Messages' onclick='./messages.jsp'>
+            </div>
+            <div>
+                <input type='button' value = 'My Wall' onclick='./wall.jsp'>
+            </div>
+            <div>
+                <input type='button' value = 'Check my Groups' onclick='./groups.jsp'>
+            </div>
             </c:when>
         <c:otherwise>
             <hr>
@@ -48,12 +57,16 @@
                 <input id="login-submit" name="login-submit" value="Login" type="submit">
             </form>
             <p>
+                Employees, log in <a href = "./employeeIndex.jsp">here</a>.
+            <p>
                 New member? Sign up for a free account!
                 <input type='button' value = 'Register' onclick='populateForm()'>
             </p>
         </div>
         <div id='new-user' hidden>
-            <form id ='register' method='post' action ='./register'>
+            <form id ='register' method='post' action ='./update'>
+                <!-- hidden parameter for action -->
+                <input name ="action" id ="action" value ="register" hidden>
                 <div>
                     <label>First Name:</label>
                     <input name="fname" id="fname" size="36" type="text" value="" required="true">
@@ -85,6 +98,10 @@
                 <div>
                     <label>Email Address:</label>
                     <input name="email" id="email" size="36" type="text" value="" required="true">
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input name="password" id="password" size="36" type="text" value="" required="true">
                 </div>
                 <div>
                     <label>Preferences:</label>
