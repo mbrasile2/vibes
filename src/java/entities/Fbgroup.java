@@ -8,18 +8,17 @@ package entities;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -40,8 +39,8 @@ public class Fbgroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "GroupID")
     private Integer groupID;
     @Size(max = 100)
@@ -55,11 +54,9 @@ public class Fbgroup implements Serializable {
     @JoinColumn(name = "Owner", referencedColumnName = "AccountNumber")
     @ManyToOne(optional = false)
     private User owner;
-    @JoinColumn(name = "PageID", referencedColumnName = "PageID")
+    @JoinColumn(name = "PageID", referencedColumnName = "pageID")
     @ManyToOne(optional = false)
-    private Page pageID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsTo")
-    private Collection<Grouppage> grouppageCollection;
+    private Pages pageID;
 
     public Fbgroup() {
     }
@@ -109,21 +106,12 @@ public class Fbgroup implements Serializable {
         this.owner = owner;
     }
 
-    public Page getPageID() {
+    public Pages getPageID() {
         return pageID;
     }
 
-    public void setPageID(Page pageID) {
+    public void setPageID(Pages pageID) {
         this.pageID = pageID;
-    }
-
-    @XmlTransient
-    public Collection<Grouppage> getGrouppageCollection() {
-        return grouppageCollection;
-    }
-
-    public void setGrouppageCollection(Collection<Grouppage> grouppageCollection) {
-        this.grouppageCollection = grouppageCollection;
     }
 
     @Override
