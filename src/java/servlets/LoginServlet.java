@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import entities.User;
+import entities.Page;
 
 /**
  *
@@ -91,6 +92,8 @@ public class LoginServlet extends HttpServlet {
                         returningUser.setFirstName(rs.getString("FirstName"));
                         returningUser.setLastName(rs.getString("LastName"));
                         returningUser.setEmailAddress(user);
+                        returningUser.setAccountNumber(rs.getInt("AccountNumber"));
+                        //returningUser.setPageID((Page)rs.getObject("PageID"));
                     }
                 
                     // add user info to the session

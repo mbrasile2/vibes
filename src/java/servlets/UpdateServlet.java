@@ -6,18 +6,18 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author kATHRYN
  */
-public class LogoutServlet extends HttpServlet {
+public class UpdateServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,14 +30,31 @@ public class LogoutServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         
+        // Get info from session
         HttpSession session = request.getSession();
-        session.invalidate();
         
-        response.sendRedirect("/vibe/");
+        // If the user isn't logged in, direct them to login page
+        if (session.getAttribute("user") == null) 
+            response.sendRedirect("/vibe/");
         
+        // Get info from form
+        String action = request.getParameter("action");
+        
+        if (action.equals("register")) {
+            String password = request.getParameter("password");
+            String fname = request.getParameter("fname");
+            String lname = request.getParameter("lname");
+            String address = request.getParameter("address");
+            String city = request.getParameter("city");
+            String state = request.getParameter("state");
+            String zip = request.getParameter("zip");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String prefs = request.getParameter("prefs");
         }
-    
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

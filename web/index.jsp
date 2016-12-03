@@ -29,7 +29,7 @@
         <c:choose>
             <c:when test="${user != null}">
                 
-            <input type='button' value = 'Logout' onclick="location.href='./logout'">
+            <input type='button' value = 'Logout' onclick="location.href='/vibe/logout'">
             <hr>
             Welcome ${user.firstName} ${user.lastName}!
             <div>
