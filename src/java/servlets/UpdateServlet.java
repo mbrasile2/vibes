@@ -111,6 +111,16 @@ public class UpdateServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                // Store the session data
+                User returningUser = new User();
+                
+                returningUser.setFirstName(fname);
+                returningUser.setLastName(lname);
+                returningUser.setEmailAddress(email);
+                returningUser.setAccountNumber(accountNum);
+                
+                session.setAttribute("user", returningUser);
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
