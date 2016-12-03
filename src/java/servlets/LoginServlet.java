@@ -93,7 +93,7 @@ public class LoginServlet extends HttpServlet {
                         returningUser.setLastName(rs.getString("LastName"));
                         returningUser.setEmailAddress(user);
                         returningUser.setAccountNumber(rs.getInt("AccountNumber"));
-                        //returningUser.setPageID((Page)rs.getObject("PageID"));
+                        returningUser.setUserID(rs.getString("UserID"));
                     }
                 
                     // add user info to the session

@@ -5,8 +5,18 @@
  */
 package servlets;
 
+import entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,18 +52,69 @@ public class UpdateServlet extends HttpServlet {
         // Get info from form
         String action = request.getParameter("action");
         
-        if (action.equals("register")) {
-            String password = request.getParameter("password");
-            String fname = request.getParameter("fname");
-            String lname = request.getParameter("lname");
-            String address = request.getParameter("address");
-            String city = request.getParameter("city");
-            String state = request.getParameter("state");
-            String zip = request.getParameter("zip");
-            String phone = request.getParameter("phone");
-            String email = request.getParameter("email");
-            String prefs = request.getParameter("prefs");
-        }
+        try {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Connection conn = null;
+            try {
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:33069/cse305", "root", "suckit");
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Statement stmt = conn.createStatement();
+            
+            if (action.equals("register")) {
+                String password = request.getParameter("password");
+                String fname = request.getParameter("fname");
+                String lname = request.getParameter("lname");
+                String address = request.getParameter("address");
+                String city = request.getParameter("city");
+                String state = request.getParameter("state");
+                String zip = request.getParameter("zip");
+                String phone = request.getParameter("phone");
+                String email = request.getParameter("email");
+                String prefs = request.getParameter("prefs");
+            
+                // make the account    
+                String query = "INSERT INTO User (firstName, lastName, address,"
+                    + " city, state, zipcode, telephone, emailaddress, preferences, password) VALUES ('" 
+                    +fname+ "', '" +lname+ "', '" +address+ "', '" +city+ "', '"
+                    +state+ "', '" +zip+ "', '" +phone+ "', '" +email+ "', '" +prefs+
+                    "', '" +password+ "');";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // get the newly created account number
+                String query2 = "SELECT AccountNumber FROM User WHERE emailaddress = '" +address+
+                        "';";
+                
+                int accountNum=0;
+                try {
+                    ResultSet rs = stmt.executeQuery(query2);
+                    while (rs.next()) 
+                        accountNum = rs.getInt("accountNumber");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Now make the page
+                String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
+                    + " VALUES (" +accountNum+ ", 0, 'y');";
+                try {
+                    stmt.executeUpdate(query3);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }   
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
