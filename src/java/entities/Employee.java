@@ -44,6 +44,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Employee.findByStartDate", query = "SELECT e FROM Employee e WHERE e.startDate = :startDate")})
 public class Employee implements Serializable {
 
+    @Size(max = 16)
+    @Column(name = "password")
+    private String password;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -217,6 +221,14 @@ public class Employee implements Serializable {
     @Override
     public String toString() {
         return "entities.Employee[ ssn=" + ssn + " ]";
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
     
 }

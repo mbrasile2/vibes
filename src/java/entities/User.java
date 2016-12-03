@@ -54,6 +54,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
 
+    @OneToMany(mappedBy = "ownerID")
+    private Collection<Pages> pagesCollection;
+
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @NotNull
@@ -371,6 +374,15 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "entities.User[ accountNumber=" + accountNumber + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Pages> getPagesCollection() {
+        return pagesCollection;
+    }
+
+    public void setPagesCollection(Collection<Pages> pagesCollection) {
+        this.pagesCollection = pagesCollection;
     }
     
 }
