@@ -91,7 +91,7 @@ public class UpdateServlet extends HttpServlet {
                 }
                 
                 // get the newly created account number
-                String query2 = "SELECT AccountNumber FROM User WHERE emailaddress = '" +address+
+                String query2 = "SELECT AccountNumber FROM User WHERE emailaddress = '" +email+
                         "';";
                 
                 int accountNum=0;
@@ -106,8 +106,19 @@ public class UpdateServlet extends HttpServlet {
                 // Now make the page
                 String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
                     + " VALUES (" +accountNum+ ", 0, 'y');";
+                stmt.executeUpdate(query3);
+                
+                // acquire the pageID
+                String query4 = "SELECT * FROM Pages WHERE (ownerID = '" +accountNum+
+                        "' AND primarypage = 'y');";
+                int s=0;
                 try {
-                    stmt.executeUpdate(query3);
+                    ResultSet rs2 = stmt.executeQuery(query4);
+                    while (rs2.next()) 
+                        s = rs2.getInt("pageID");
+                                  
+                    // add user info to the session
+                    session.setAttribute("pageID", s);
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -121,6 +132,16 @@ public class UpdateServlet extends HttpServlet {
                 returningUser.setAccountNumber(accountNum);
                 
                 session.setAttribute("user", returningUser);
+            }
+            if (action.equals("post")) {
+                String post_data = request.getParameter("post_data");
+                int acctNum = ((User)session.getAttribute("user")).getAccountNumber();
+                
+                  // add post to database   
+                String query = "INSERT INTO Posts (author, content, page) VALUES (" +acctNum+ ", '"
+                        +post_data+ "', " +session.getAttribute("pageID")+ ");";
+                
+                stmt.executeUpdate(query);
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
