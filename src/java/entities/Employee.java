@@ -41,9 +41,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Employee.findByZipcode", query = "SELECT e FROM Employee e WHERE e.zipcode = :zipcode"),
     @NamedQuery(name = "Employee.findByTelephone", query = "SELECT e FROM Employee e WHERE e.telephone = :telephone"),
     @NamedQuery(name = "Employee.findByHourlyRate", query = "SELECT e FROM Employee e WHERE e.hourlyRate = :hourlyRate"),
-    @NamedQuery(name = "Employee.findByStartDate", query = "SELECT e FROM Employee e WHERE e.startDate = :startDate"),
-    @NamedQuery(name = "Employee.findByPassword", query = "SELECT e FROM Employee e WHERE e.password = :password")})
+    @NamedQuery(name = "Employee.findByStartDate", query = "SELECT e FROM Employee e WHERE e.startDate = :startDate")})
 public class Employee implements Serializable {
+
+    @Size(max = 16)
+    @Column(name = "password")
+    private String password;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -87,9 +90,6 @@ public class Employee implements Serializable {
     @Column(name = "startDate")
     @Temporal(TemporalType.DATE)
     private Date startDate;
-    @Size(max = 16)
-    @Column(name = "password")
-    private String password;
     @OneToMany(mappedBy = "employeeID")
     private Collection<Advertisement> advertisementCollection;
 
@@ -189,14 +189,6 @@ public class Employee implements Serializable {
         this.startDate = startDate;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @XmlTransient
     public Collection<Advertisement> getAdvertisementCollection() {
         return advertisementCollection;
@@ -229,6 +221,14 @@ public class Employee implements Serializable {
     @Override
     public String toString() {
         return "entities.Employee[ ssn=" + ssn + " ]";
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
     
 }

@@ -22,10 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import entities.User;
-import entities.Pages;
-import entities.Posts;
-import java.util.ArrayList;
-import java.util.List;
+import entities.Page;
 
 /**
  *
@@ -49,7 +46,7 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("user");
         String password = request.getParameter("password");
         
-        /* get session object */
+        /* create session object */
         HttpSession session = request.getSession();
         
         String pw = new String();
@@ -87,7 +84,8 @@ public class LoginServlet extends HttpServlet {
                 User returningUser = new User();
                 
                 String query1 = "SELECT * FROM User WHERE (EmailAddress = '" +user+ 
-                        "' AND password = '" +password+ "');";         
+                        "' AND password = '" +password+ "');";
+            
                 try {
                     ResultSet rs = stmt.executeQuery(query1) ;
                     while (rs.next()) {
@@ -102,50 +100,6 @@ public class LoginServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                String query2 = "SELECT * FROM Pages WHERE (ownerID = '" +returningUser.getAccountNumber()+
-                        "' AND primarypage = 'n');";
-                String query3 = "SELECT * FROM Pages WHERE (ownerID = '" +returningUser.getAccountNumber()+
-                        "' AND primarypage = 'y');";
-                
-                ArrayList<Integer> groupPages = new ArrayList<>();
-                int mainPage = 0;
-                
-                try {
-                    ResultSet rs = stmt.executeQuery(query2) ;
-                    while (rs.next()) {
-                        groupPages.add(rs.getInt("pageID"));
-                    }
-                    ResultSet rs2 = stmt.executeQuery(query3);
-                    while (rs2.next()) {
-                        mainPage = rs2.getInt("pageID");
-                    }
-                
-                    // add user info to the session
-                    session.setAttribute("pageID", mainPage);
-                    session.setAttribute("groupIDs", groupPages);
-                } catch (SQLException ex) {
-                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                query = "SELECT * FROM Posts WHERE (Author = " +returningUser.getAccountNumber()+
-                        ") ORDER BY postdate DESC;";
-                ArrayList<Posts> postList = new ArrayList<Posts>();
-                try {
-                    ResultSet rs = stmt.executeQuery(query) ;
-                    Posts p = new Posts();
-                    while (rs.next()) {
-                        p.setPostID(rs.getInt("PostID"));
-                        p.setPostDate(rs.getDate("PostDate"));
-                        p.setContent(rs.getString("content"));
-                        postList.add(p);
-                    }    
-                
-                session.setAttribute("postlist", postList);
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }  
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);

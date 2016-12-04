@@ -51,7 +51,7 @@ public class Comments implements Serializable {
     @JoinColumn(name = "Author", referencedColumnName = "AccountNumber")
     @ManyToOne(optional = false)
     private User author;
-    @JoinColumn(name = "Post", referencedColumnName = "postID")
+    @JoinColumn(name = "Post", referencedColumnName = "PostId")
     @ManyToOne
     private Posts post;
 
