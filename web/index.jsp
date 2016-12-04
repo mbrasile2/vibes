@@ -36,7 +36,7 @@
                 <input type='button' value = 'Messages' onclick="location.href='./messages.jsp'">
             </div>
             <div>
-                <input type='button' value = 'My Wall' onclick="location.href='./wall.jsp'">
+                <input type='button' value = 'My Wall' onclick="location.href='wall.jsp'">
             </div>
             <div>
                 <input type='button' value = 'Check my Groups' onclick="location.href='./groups.jsp'">

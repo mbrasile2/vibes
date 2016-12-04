@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
             }
             Connection conn = null;
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://localhost:33069/cse305", "root", "suckit");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSE305Project", "root", "1097123466344aA!");
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
