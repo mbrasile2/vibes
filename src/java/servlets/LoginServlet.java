@@ -5,6 +5,8 @@
  */
 package servlets;
 
+import beans.message;
+import entities.Message;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -124,7 +126,7 @@ public class LoginServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                /*
+                
                 query = "SELECT * FROM Posts WHERE (Author = " +returningUser.getAccountNumber()+
                         ") ORDER BY postdate DESC;";
                 
@@ -132,9 +134,10 @@ public class LoginServlet extends HttpServlet {
                
                 try {
                     ResultSet rs = stmt.executeQuery(query) ;
-                    Posts p = new Posts();
+                    //Posts p = new Posts();
                     while (rs.next()) {
-                        p.setPostID(rs.getInt("PostID"));
+                        Posts p = new Posts();
+                        p.setPostId(rs.getInt("PostID"));
                         p.setPostDate(rs.getDate("PostDate"));
                         p.setContent(rs.getString("content"));
                         postList.add(p);
@@ -144,7 +147,43 @@ public class LoginServlet extends HttpServlet {
                 
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }  */
+            }  
+                
+            // get messages
+             query = "SELECT * FROM Message WHERE (Receiver = " +returningUser.getAccountNumber()+
+                        ") ORDER BY messagedate DESC;";
+                
+            ArrayList<message> messageList = new ArrayList<>();
+               
+            try {
+                ResultSet rs = stmt.executeQuery(query) ;
+                while (rs.next()) {
+                    message m = new message();
+                    int i = rs.getObject("Sender", Integer.class);
+                    m.setAcct(i);
+                    m.setDate(rs.getDate("MessageDate"));
+                    m.setContent(rs.getString("content"));
+                    messageList.add(m);
+                }    
+                
+                for (message m2 : messageList) {
+                    query2 = "SELECT firstname, lastname, emailaddress FROM User WHERE (accountNumber = " +m2.getAcct()+ ");";
+                    try {
+                        ResultSet rs2 = stmt.executeQuery(query2) ;
+                        while (rs2.next()) {
+                            m2.setEmail(rs2.getString("emailAddress"));
+                            m2.setSender(rs2.getString("firstName") + " " + rs2.getString("lastName"));
+                        }
+                        }catch (SQLException ex) {
+                        Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    } 
+                }
+                session.setAttribute("messages", messageList);
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+            
                 
             }
         } catch (SQLException ex) {
