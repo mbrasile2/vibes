@@ -19,5 +19,15 @@
         <div>
             <input type='button' value = 'Make a new Group' onclick="location.href='./newgroup.jsp'">
         </div>
+        <div id ="new_group">
+            <form method ="post" action ="./update">
+                <input name ="action" id ="action" value ="new_grooup" hidden>
+                <input name ="sender" id ="sender" value ="${user.accountNumber}" hidden>
+                <label>Receiver (email address):</label>
+                <input name = "receiver" id="receiver" type="text"> 
+                <textarea name="content" id="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
+                <input id="msg-submit" name="msg-submit" value="Send Message" type="submit">
+            </form>
+        </div>
     </body>
 </html>

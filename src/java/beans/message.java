@@ -19,6 +19,15 @@ public class message implements Serializable {
     private String email;
     private String content;
     private Date date;
+    private int mid;
+
+    public int getMid() {
+        return mid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
+    }
 
     public int getAcct() {
         return acct;

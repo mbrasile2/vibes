@@ -5,6 +5,8 @@
  */
 package servlets;
 
+import beans.message;
+import entities.Posts;
 import entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,9 +15,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -45,13 +49,14 @@ public class UpdateServlet extends HttpServlet {
         // Get info from session
         HttpSession session = request.getSession();
         
-        // If the user isn't logged in, direct them to login page
-        if (session.getAttribute("user") == null) 
-            response.sendRedirect("/vibe/");
-        
         // Get info from form
         String action = request.getParameter("action");
         
+        // If the user isn't logged in, direct them to login page
+        if ((session.getAttribute("user") == null) && !(action.equals("register"))) {
+            response.sendRedirect("/vibe/");
+        }
+
         try {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -102,7 +107,7 @@ public class UpdateServlet extends HttpServlet {
                 } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+                        
                 // Now make the page
                 String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
                     + " VALUES (" +accountNum+ ", 0, 'y');";
@@ -142,10 +147,87 @@ public class UpdateServlet extends HttpServlet {
                         +post_data+ "', " +session.getAttribute("pageID")+ ");";
                 
                 stmt.executeUpdate(query);
+                
+                // add post into the session data
+                query = "SELECT * FROM Posts WHERE (Author = " +acctNum+
+                        ") ORDER BY postdate DESC;";
+                
+                ArrayList<Posts> postList = new ArrayList<>();
+               
+                try {
+                    ResultSet rs = stmt.executeQuery(query) ;
+                    while (rs.next()) {
+                        Posts p = new Posts();
+                        p.setPostId(rs.getInt("PostID"));
+                        p.setPostDate(rs.getDate("PostDate"));
+                        p.setContent(rs.getString("content"));
+                        postList.add(p);
+                    }    
+                
+                    session.setAttribute("postlist", postList);
+                    response.sendRedirect("./wall.jsp");
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }  
+            }
+            if (action.equals("delete_msg")) {
+                int mid = Integer.valueOf(request.getParameter("mid"));
+                
+                // make the account    
+                String query = "DELETE FROM Message WHERE (MessageId = " +mid+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+      
+                // Remove from the session data
+                ArrayList<message> mess = (ArrayList<message>)session.getAttribute("messages");
+                message toBeDeleted = null;
+                for (message m : mess) {
+                    if (m.getMid() == mid) {
+                        toBeDeleted = m;
+                        break;
+                    }
+                }
+                mess.remove(toBeDeleted);
+                session.setAttribute("messages", mess);
+        
+                response.sendRedirect("./messages.jsp");
+                return;
+            }
+            if (action.equals("send_msg")) { 
+            
+                String c1 = request.getParameter("content");
+                String c2 = request.getParameter("sender");
+                String c3 = request.getParameter("receiver");
+                int c4 = 0;
+                
+                String query1 = "SELECT AccountNumber FROM User WHERE (EmailAddress = '" +c3+ "');";         
+                try {
+                    ResultSet rs = stmt.executeQuery(query1) ;
+                    while (rs.next()) {
+                        c4 = rs.getInt("AccountNumber");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // make the message    
+                String query = "INSERT INTO Message (content, sender, receiver) VALUES ('" +c1+ "', "
+                        +c2+ ", " +c4+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        
+                response.sendRedirect("./messages.jsp");
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

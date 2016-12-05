@@ -134,7 +134,6 @@ public class LoginServlet extends HttpServlet {
                
                 try {
                     ResultSet rs = stmt.executeQuery(query) ;
-                    //Posts p = new Posts();
                     while (rs.next()) {
                         Posts p = new Posts();
                         p.setPostId(rs.getInt("PostID"));
@@ -163,6 +162,7 @@ public class LoginServlet extends HttpServlet {
                     m.setAcct(i);
                     m.setDate(rs.getDate("MessageDate"));
                     m.setContent(rs.getString("content"));
+                    m.setMid(rs.getInt("MessageID"));
                     messageList.add(m);
                 }    
                 
