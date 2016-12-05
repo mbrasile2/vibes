@@ -13,11 +13,12 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,7 +39,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-    @NamedQuery(name = "User.findByUserID", query = "SELECT u FROM User u WHERE u.userID = :userID"),
     @NamedQuery(name = "User.findByLastName", query = "SELECT u FROM User u WHERE u.lastName = :lastName"),
     @NamedQuery(name = "User.findByFirstName", query = "SELECT u FROM User u WHERE u.firstName = :firstName"),
     @NamedQuery(name = "User.findByAddress", query = "SELECT u FROM User u WHERE u.address = :address"),
@@ -54,15 +54,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
 
-    @OneToMany(mappedBy = "ownerID")
-    private Collection<Pages> pagesCollection;
-
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 16)
-    @Column(name = "UserID")
-    private String userID;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
@@ -94,8 +86,8 @@ public class User implements Serializable {
     @Column(name = "EmailAddress")
     private String emailAddress;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "AccountNumber")
     private Integer accountNumber;
     @Column(name = "AccountCreationDate")
@@ -112,13 +104,13 @@ public class User implements Serializable {
     private String password;
     @JoinTable(name = "groupmembership", joinColumns = {
         @JoinColumn(name = "UserID", referencedColumnName = "AccountNumber")}, inverseJoinColumns = {
-        @JoinColumn(name = "GroupID", referencedColumnName = "GroupID")})
+        @JoinColumn(name = "GroupID", referencedColumnName = "groupid")})
     @ManyToMany
     private Collection<Fbgroup> fbgroupCollection;
-    @ManyToMany(mappedBy = "userCollection")
-    private Collection<Posts> postsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private Collection<Comments> commentsCollection;
+    @OneToMany(mappedBy = "ownerID")
+    private Collection<Pages> pagesCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Collection<Fbgroup> fbgroupCollection1;
     @OneToMany(mappedBy = "accountNum")
@@ -128,12 +120,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "receiver")
     private Collection<Message> messageCollection1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private Collection<Posts> postsCollection1;
-    @JoinColumn(name = "PageID", referencedColumnName = "PageID")
-    @ManyToOne(optional = false)
-    private Page pageID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "belongsTo")
-    private Collection<Personalpage> personalpageCollection;
+    private Collection<Posts> postsCollection;
 
     public User() {
     }
@@ -142,20 +129,11 @@ public class User implements Serializable {
         this.accountNumber = accountNumber;
     }
 
-    public User(Integer accountNumber, String userID, String lastName, String firstName, String emailAddress) {
+    public User(Integer accountNumber, String lastName, String firstName, String emailAddress) {
         this.accountNumber = accountNumber;
-        this.userID = userID;
         this.lastName = lastName;
         this.firstName = firstName;
         this.emailAddress = emailAddress;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 
     public String getLastName() {
@@ -272,21 +250,21 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Posts> getPostsCollection() {
-        return postsCollection;
-    }
-
-    public void setPostsCollection(Collection<Posts> postsCollection) {
-        this.postsCollection = postsCollection;
-    }
-
-    @XmlTransient
     public Collection<Comments> getCommentsCollection() {
         return commentsCollection;
     }
 
     public void setCommentsCollection(Collection<Comments> commentsCollection) {
         this.commentsCollection = commentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Pages> getPagesCollection() {
+        return pagesCollection;
+    }
+
+    public void setPagesCollection(Collection<Pages> pagesCollection) {
+        this.pagesCollection = pagesCollection;
     }
 
     @XmlTransient
@@ -326,29 +304,12 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Posts> getPostsCollection1() {
-        return postsCollection1;
+    public Collection<Posts> getPostsCollection() {
+        return postsCollection;
     }
 
-    public void setPostsCollection1(Collection<Posts> postsCollection1) {
-        this.postsCollection1 = postsCollection1;
-    }
-
-    public Page getPageID() {
-        return pageID;
-    }
-
-    public void setPageID(Page pageID) {
-        this.pageID = pageID;
-    }
-
-    @XmlTransient
-    public Collection<Personalpage> getPersonalpageCollection() {
-        return personalpageCollection;
-    }
-
-    public void setPersonalpageCollection(Collection<Personalpage> personalpageCollection) {
-        this.personalpageCollection = personalpageCollection;
+    public void setPostsCollection(Collection<Posts> postsCollection) {
+        this.postsCollection = postsCollection;
     }
 
     @Override
@@ -374,15 +335,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "entities.User[ accountNumber=" + accountNumber + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Pages> getPagesCollection() {
-        return pagesCollection;
-    }
-
-    public void setPagesCollection(Collection<Pages> pagesCollection) {
-        this.pagesCollection = pagesCollection;
     }
     
 }

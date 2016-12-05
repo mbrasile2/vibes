@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.groupBean;
 import beans.message;
 import entities.Posts;
 import entities.User;
@@ -158,7 +159,7 @@ public class UpdateServlet extends HttpServlet {
                     ResultSet rs = stmt.executeQuery(query) ;
                     while (rs.next()) {
                         Posts p = new Posts();
-                        p.setPostId(rs.getInt("PostID"));
+                        p.setPostID(rs.getInt("PostID"));
                         p.setPostDate(rs.getDate("PostDate"));
                         p.setContent(rs.getString("content"));
                         postList.add(p);
@@ -230,34 +231,12 @@ public class UpdateServlet extends HttpServlet {
                 int owner = Integer.valueOf(request.getParameter("owner"));
                 String groupName = request.getParameter("groupname");
             
-                // make the group   
-                String query = "INSERT INTO fbGroup (owner, groupname) VALUES (" +owner
-                        + ", '" +groupName+ "');";
-                try {
-                    stmt.executeUpdate(query);
-                } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                // get the newly created group id
-                String query2 = "SELECT groupID FROM fbGroup WHERE owner = " +owner+
-                        ";";
-                
-                int groupID = 0;
-                try {
-                    ResultSet rs = stmt.executeQuery(query2);
-                    while (rs.next()) 
-                        groupID = rs.getInt("accountNumber");
-                } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                        
-                // Now make the page
+                // make the new page
                 String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
                     + " VALUES (" +owner+ ", 0, 'x');";
                 stmt.executeUpdate(query3);
                 
-                // acquire the pageID and set it into the group table
+                // acquire the pageID
                 String query4 = "SELECT * FROM Pages WHERE (ownerID = '" +owner+
                         "' AND primarypage = 'x');";
                 int s=0;
@@ -269,16 +248,105 @@ public class UpdateServlet extends HttpServlet {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                // set group to proper pageID
-                String query5 = "UPDATE fbGroup SET PageID = " +s+ "WHERE GroupID = " +groupID+ ";";
+                // make the group   
+                String query = "INSERT INTO fbGroup (owner, groupname, pageID) VALUES (" +owner
+                        + ", '" +groupName+ "', " +s+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                                        
+                // update pageID
                 String query6 = "UPDATE Pages SET primarypage = 'n' WHERE PageID = " +s+ ";";
                 try {
-                    stmt.executeUpdate(query5);
                     stmt.executeUpdate(query6);
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                // update session data
+                ArrayList<groupBean> groups = (ArrayList<groupBean>)session.getAttribute("groups");
+                groupBean newGroup = new groupBean();
+                newGroup.setGroupName(groupName);
+                newGroup.setPageID(s);
+                groups.add(newGroup);
+   
+                session.setAttribute("groups", groups);
+                response.sendRedirect("./groups.jsp");
+                return;
             }
+            if (action.equals("leave_group") {
+                // update group membership
+                String query6 = "DELETE FROM GroupMembership WHERE (groupID = ;";
+                try {
+                    stmt.executeUpdate(query6);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }   
+            if (action.equals("edit_group")) {
+                String gname = request.getParameter("gname");
+                // TODO: edit this to page URL
+                int gid = Integer.valueOf(request.getParameter("gid"));
+                
+                // edit the group    
+                String query = "UPDATE fbGroup SET GroupName = '" +gname+ "' WHERE (GroupId = " +gid+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+      
+                // Remove from the session data
+                ArrayList<groupBean> gbeans = (ArrayList<groupBean>)session.getAttribute("groupList");
+                groupBean toBeEdited = null;
+                for (groupBean g : gbeans) {
+                    if (g.getPageID() == gid) {
+                        toBeEdited = g;
+                        break;
+                    }
+                }
+                gbeans.remove(toBeEdited);
+                toBeEdited.setGroupName(gname);
+                gbeans.add(toBeEdited);
+                session.setAttribute("groupList", gbeans);
+        
+                response.sendRedirect("./groups.jsp");
+                return;
+            }
+            if (action.equals("add_user")) {
+                String email = request.getParameter("email");
+                String groupID = request.getParameter("group");
+                int accountNumber = -1;
+                
+                // check if user exists
+                String query = "SELECT AccountNumber FROM User WHERE (EmailAddress = '" +email+ "');";
+            try {
+                ResultSet rs = stmt.executeQuery(query) ;
+                while (rs.next()) {
+                    accountNumber = rs.getInt("AccountNumber");
+                }    
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if (accountNumber < 0) {
+                // user does not exist. return
+                return;
+            }
+            else {
+                // add user    
+                query = "INSERT INTO groupMembership (userID, groupID) VALUES (" +accountNumber+ ", "
+                        +groupID+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

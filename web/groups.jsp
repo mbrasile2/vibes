@@ -31,5 +31,27 @@
                 <input id="new-group-submit" name="new-group-submit" value="Create Group" type="submit">
             </form>
         </div>
+                <h2> Groups I own: </h2>
+                    <c:forEach items="${groups}" var = "group">
+                        <hr>
+                        ${group.groupName} 
+                        <br>
+                        ${group.pageID}
+                    </c:forEach>
+                        <hr>
+                <h2> Groups I'm a member of: </h2>
+                    <c:forEach items="${groupMembership}" var = "member">
+                        <hr>
+                        ${member.groupName} 
+                        <br>
+                        ${member.pageID}
+                        <form method="post" action ="/vibe/update">
+                            <input name ="action" id ="action" value ="leave_group" hidden>
+                            <input name ="groupLeaving" id ="groupLeaving" value ="${member.groupName}" hidden>
+                            <input value="Leave Group" type="submit">
+                        </form>
+                    </c:forEach>
+    </body>
     </body>
 </html>
+ 

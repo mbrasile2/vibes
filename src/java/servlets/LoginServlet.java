@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.groupBean;
 import beans.message;
 import entities.Fbgroup;
 import entities.Message;
@@ -137,7 +138,7 @@ public class LoginServlet extends HttpServlet {
                     ResultSet rs = stmt.executeQuery(query) ;
                     while (rs.next()) {
                         Posts p = new Posts();
-                        p.setPostId(rs.getInt("PostID"));
+                        p.setPostID(rs.getInt("PostID"));
                         p.setPostDate(rs.getDate("PostDate"));
                         p.setContent(rs.getString("content"));
                         postList.add(p);
@@ -185,20 +186,72 @@ public class LoginServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }  
             
-            // get users groups
+            // get users groups (owner)
             query = "SELECT * FROM fbGroup WHERE (owner = " +returningUser.getAccountNumber()+
                         ");";
                 
-            ArrayList<Fbgroup> groupList = new ArrayList<>();
+            ArrayList<groupBean> groupList = new ArrayList<>();
                
             try {
                 ResultSet rs = stmt.executeQuery(query) ;
                 while (rs.next()) {
-                    
+                    groupBean g = new groupBean();
+                    g.setGroupName(rs.getString("groupname"));
+                    g.setPageID(rs.getInt("pageID"));
+                    g.setGroupID(rs.getInt("GroupID"));
+                    g.setGroupOwner(returningUser.getAccountNumber());
+                    groupList.add(g);
                 }   
+                
+                session.setAttribute("groups", groupList);
             } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+             // get users groups (member)
+            query = "SELECT * FROM GroupMembership WHERE (UserID = " +returningUser.getAccountNumber()+
+                        ");";
+                
+            ArrayList<groupBean> groupMembership = new ArrayList<>();
+            ArrayList<groupBean> groupMembership2 = new ArrayList<>();
+            
+            // get the group IDs from membership list 
+            try {
+                ResultSet rs = stmt.executeQuery(query) ;
+                while (rs.next()) {
+                    groupBean g = new groupBean();
+                    g.setGroupID(rs.getInt("groupID"));
+                    groupMembership.add(g);
+                }   
+               
+            } catch (SQLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            // now get the info
+            for (groupBean g : groupMembership) {
+                
+                query = "SELECT * FROM fbGroup WHERE (GroupID = " +g.getGroupID()+
+                        ");";
+                try {
+                    ResultSet rs = stmt.executeQuery(query) ;
+                    while (rs.next()) {
+                        groupBean gb = new groupBean();
+                        gb.setGroupID(g.getGroupID());
+                        gb.setPageID(rs.getInt("pageID"));
+                        gb.setGroupName(rs.getString("GroupName"));
+                        gb.setGroupOwner(rs.getInt("owner"));
+                        groupMembership2.add(gb);
+                    }   
+               
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // add to session data
+                session.setAttribute("groupMembership", groupMembership2);
+            }
+            
         }
         }catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
