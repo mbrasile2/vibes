@@ -16,17 +16,19 @@
         <h1>Vibe</h1>
         <hr>
         
-        <div>
-            <input type='button' value = 'Make a new Group' onclick="location.href='./newgroup.jsp'">
+        <div id ="new-grp-btn">
+            <input type='button' value = 'Make a new Group' onclick="">
         </div>
         <div id ="new_group">
             <form method ="post" action ="./update">
-                <input name ="action" id ="action" value ="new_grooup" hidden>
-                <input name ="sender" id ="sender" value ="${user.accountNumber}" hidden>
-                <label>Receiver (email address):</label>
-                <input name = "receiver" id="receiver" type="text"> 
-                <textarea name="content" id="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
-                <input id="msg-submit" name="msg-submit" value="Send Message" type="submit">
+                <input name ="action" id ="action" value ="new_group" hidden>
+                <input name ="owner" id ="owner" value ="${user.accountNumber}" hidden>
+                <div>
+                    <label>Group Name:</label>
+                    <input name = "groupname" id="groupname" type="text"> 
+                </div> 
+                
+                <input id="new-group-submit" name="new-group-submit" value="Create Group" type="submit">
             </form>
         </div>
     </body>

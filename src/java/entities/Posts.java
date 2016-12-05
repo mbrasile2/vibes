@@ -11,6 +11,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -40,6 +42,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Posts.findByPostDate", query = "SELECT p FROM Posts p WHERE p.postDate = :postDate"),
     @NamedQuery(name = "Posts.findByContent", query = "SELECT p FROM Posts p WHERE p.content = :content")})
 public class Posts implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "postID")
+    private Integer postID;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -155,6 +163,43 @@ public class Posts implements Serializable {
     @Override
     public String toString() {
         return "entities.Posts[ postId=" + postId + " ]";
+    }
+
+    public Posts(Integer postID) {
+        this.postID = postID;
+    }
+
+    public Integer getPostID() {
+        return postID;
+    }
+
+    public void setPostID(Integer postID) {
+        this.postID = postID;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (postID != null ? postID.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Posts)) {
+            return false;
+        }
+        Posts other = (Posts) object;
+        if ((this.postID == null && other.postID != null) || (this.postID != null && !this.postID.equals(other.postID))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entities.Posts[ postID=" + postID + " ]";
     }
     
 }

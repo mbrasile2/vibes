@@ -6,6 +6,7 @@
 package servlets;
 
 import beans.message;
+import entities.Fbgroup;
 import entities.Message;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -184,12 +185,25 @@ public class LoginServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }  
             
+            // get users groups
+            query = "SELECT * FROM fbGroup WHERE (owner = " +returningUser.getAccountNumber()+
+                        ");";
                 
-            }
-        } catch (SQLException ex) {
+            ArrayList<Fbgroup> groupList = new ArrayList<>();
+               
+            try {
+                ResultSet rs = stmt.executeQuery(query) ;
+                while (rs.next()) {
+                    
+                }   
+            } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-       
+        }catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         RequestDispatcher jsp = request.getRequestDispatcher("/index.jsp");
         jsp.forward(request, response);
     }

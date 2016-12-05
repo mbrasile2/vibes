@@ -224,6 +224,60 @@ public class UpdateServlet extends HttpServlet {
                 }
         
                 response.sendRedirect("./messages.jsp");
+                return;
+            }
+            if (action.equals("new_group")) {
+                int owner = Integer.valueOf(request.getParameter("owner"));
+                String groupName = request.getParameter("groupname");
+            
+                // make the group   
+                String query = "INSERT INTO fbGroup (owner, groupname) VALUES (" +owner
+                        + ", '" +groupName+ "');";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // get the newly created group id
+                String query2 = "SELECT groupID FROM fbGroup WHERE owner = " +owner+
+                        ";";
+                
+                int groupID = 0;
+                try {
+                    ResultSet rs = stmt.executeQuery(query2);
+                    while (rs.next()) 
+                        groupID = rs.getInt("accountNumber");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                        
+                // Now make the page
+                String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
+                    + " VALUES (" +owner+ ", 0, 'x');";
+                stmt.executeUpdate(query3);
+                
+                // acquire the pageID and set it into the group table
+                String query4 = "SELECT * FROM Pages WHERE (ownerID = '" +owner+
+                        "' AND primarypage = 'x');";
+                int s=0;
+                try {
+                    ResultSet rs2 = stmt.executeQuery(query4);
+                    while (rs2.next()) 
+                        s = rs2.getInt("pageID");
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // set group to proper pageID
+                String query5 = "UPDATE fbGroup SET PageID = " +s+ "WHERE GroupID = " +groupID+ ";";
+                String query6 = "UPDATE Pages SET primarypage = 'n' WHERE PageID = " +s+ ";";
+                try {
+                    stmt.executeUpdate(query5);
+                    stmt.executeUpdate(query6);
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);

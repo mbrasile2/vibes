@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,6 +37,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Message.findByContent", query = "SELECT m FROM Message m WHERE m.content = :content"),
     @NamedQuery(name = "Message.findByMessageDate", query = "SELECT m FROM Message m WHERE m.messageDate = :messageDate")})
 public class Message implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "messageid")
+    private Integer messageid;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -125,6 +133,43 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "entities.Message[ messageID=" + messageID + " ]";
+    }
+
+    public Message(Integer messageid) {
+        this.messageid = messageid;
+    }
+
+    public Integer getMessageid() {
+        return messageid;
+    }
+
+    public void setMessageid(Integer messageid) {
+        this.messageid = messageid;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (messageid != null ? messageid.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Message)) {
+            return false;
+        }
+        Message other = (Message) object;
+        if ((this.messageid == null && other.messageid != null) || (this.messageid != null && !this.messageid.equals(other.messageid))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entities.Message[ messageid=" + messageid + " ]";
     }
     
 }
