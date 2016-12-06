@@ -230,25 +230,30 @@ public class UpdateServlet extends HttpServlet {
                 // make the group   
                 String query = "INSERT INTO fbGroup (owner, groupname, pageID) VALUES (" +owner
                         + ", '" +groupName+ "', " +s+ ");";
-                try {
-                    stmt.executeUpdate(query);
-                } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                                        
+                stmt.executeUpdate(query);
+                                 
                 // update pageID
                 String query6 = "UPDATE Pages SET primarypage = 'n' WHERE PageID = " +s+ ";";
+                stmt.executeUpdate(query6);
+                
+                // acquire the groupID
+                int gid = -1;
+                String query5 = "SELECT groupID FROM fbGroup WHERE pageID = " +s+ ";"; 
                 try {
-                    stmt.executeUpdate(query6);
+                    ResultSet rs2 = stmt.executeQuery(query5);
+                    while (rs2.next()) 
+                        gid = rs2.getInt("groupID");
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+                                
                 // update session data
                 ArrayList<groupBean> groups = (ArrayList<groupBean>)session.getAttribute("groups");
                 groupBean newGroup = new groupBean();
                 newGroup.setGroupName(groupName);
                 newGroup.setPageID(s);
+                newGroup.setGroupOwner(owner);
+                newGroup.setGroupID(gid);
                 groups.add(newGroup);
    
                 session.setAttribute("groups", groups);
@@ -361,6 +366,28 @@ public class UpdateServlet extends HttpServlet {
                 session.setAttribute("currentPosts", posts);
                 response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
             } 
+            if (action.equals("delete_group")) {
+                int groupID = ((groupBean)session.getAttribute("currentGroup")).getGroupID();
+                
+                // delete the group    
+                String query = "DELETE FROM groupMembership WHERE GroupID = " +groupID+ ";";
+                stmt.executeUpdate(query);
+                query = "DELETE FROM fbGroup WHERE GroupID = " +groupID+ ";";
+                stmt.executeUpdate(query);
+                
+                // remove from session data
+                ArrayList<groupBean> groupList = ((ArrayList<groupBean>)session.getAttribute("groups"));
+                groupBean toBeDeleted=null;
+                for (groupBean gb : groupList) {
+                    if (gb.getGroupID() == groupID) {
+                        toBeDeleted = gb;
+                        break;
+                    }
+                }
+                groupList.remove(toBeDeleted);
+                session.setAttribute("groups", groupList);
+                response.sendRedirect("/vibe/groups");
+            }
             if (action.equals("remove_user")) {
                 int userID = Integer.valueOf(request.getParameter("userID"));
                 int groupID = ((groupBean)session.getAttribute("currentGroup")).getGroupID();

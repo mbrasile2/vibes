@@ -40,6 +40,13 @@
                 </div>
             </c:forEach>
         </div>
+            <div>
+                <form method="post" action ="/vibe/update">
+                    <input name ="action" id ="action" value ="delete_group" hidden>
+                    <input name ="gid" id ="gid" value ="${currentGroup.groupID}" hidden>
+                    <input value="DELETE GROUP" type="submit">
+                </form>
+                </div>
         </c:when>
         <c:otherwise>
             <hr>
