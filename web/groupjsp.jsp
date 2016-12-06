@@ -35,8 +35,10 @@
                 <div>
                     <label>Add user (enter Email):</label>
                     <input name="email" id="email" size="36" type="text" value="" required="true">
-                    <input id="add-submit" name="add-submit" value="Add User" type="submit">
                 </div>
+                <input id="add-submit" name="add-submit" value="Add User" type="submit">
+                <br>
+                <input type ="button" value="Edit Group Settings" onclick="location.href='/vibe/groupSettings.jsp'">
             </form>
                 <hr>
                 <form method ="post" action ="/vibe/update" id ="page_post">

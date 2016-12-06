@@ -281,7 +281,6 @@ public class UpdateServlet extends HttpServlet {
             }   
             if (action.equals("edit_group")) {
                 String gname = request.getParameter("gname");
-                // TODO: edit this to page URL
                 int gid = Integer.valueOf(request.getParameter("gid"));
                 
                 // edit the group    
@@ -292,11 +291,11 @@ public class UpdateServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
       
-                // Remove from the session data
+                /* Remove from the session data
                 ArrayList<groupBean> gbeans = (ArrayList<groupBean>)session.getAttribute("groupList");
                 groupBean toBeEdited = null;
                 for (groupBean g : gbeans) {
-                    if (g.getPageID() == gid) {
+                    if (g.getGroupID() == gid) {
                         toBeEdited = g;
                         break;
                     }
@@ -304,9 +303,10 @@ public class UpdateServlet extends HttpServlet {
                 gbeans.remove(toBeEdited);
                 toBeEdited.setGroupName(gname);
                 gbeans.add(toBeEdited);
-                session.setAttribute("groupList", gbeans);
+                session.setAttribute("groupList", gbeans);*/
         
-                response.sendRedirect("./groups.jsp");
+                RequestDispatcher jsf = request.getRequestDispatcher("/groupSettings.jsp");
+                jsf.forward(request, response);
                 return;
             }
             if (action.equals("add_user")) {
@@ -361,7 +361,21 @@ public class UpdateServlet extends HttpServlet {
                 session.setAttribute("currentPosts", posts);
                 response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
             } 
-            
+            if (action.equals("remove_user")) {
+                int userID = Integer.valueOf(request.getParameter("userID"));
+                int groupID = ((groupBean)session.getAttribute("currentGroup")).getGroupID();
+                
+                // edit the group    
+                String query = "DELETE FROM groupMembership WHERE (UserId = " +userID+ " AND "+
+                        "GroupID = " +groupID+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

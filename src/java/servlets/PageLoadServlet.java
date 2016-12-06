@@ -24,6 +24,7 @@ import javax.servlet.RequestDispatcher;
 
 import beans.postBean;
 import java.util.ArrayList;
+import beans.userBean;
 
 /**
  *
@@ -126,6 +127,28 @@ public class PageLoadServlet extends HttpServlet {
                     } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                                
+                // load group users
+                ArrayList<userBean> users = new ArrayList<>();
+                
+                try {
+                    query = "SELECT firstname, lastname, accountNumber FROM User " +
+                        "JOIN groupMembership " +
+                        "ON groupMembership.UserID = User.AccountNumber " +
+                        "where groupMembership.groupID = " +g.getGroupID()+ ";";
+                    ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            userBean newBean = new userBean();
+                            newBean.setFirstName(rs.getString("firstname"));
+                            newBean.setLastName(rs.getString("lastname"));
+                            newBean.setAccountNumber(rs.getInt("accountnumber"));
+
+                            users.add(newBean);
+                        }
+                    } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                session.setAttribute("groupUsers", users);
                 session.setAttribute("currentGroup", g);
                 RequestDispatcher jsp;
                 jsp = request.getRequestDispatcher("/groupjsp.jsp");
