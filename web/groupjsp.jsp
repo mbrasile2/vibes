@@ -14,6 +14,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         
         <title>${currentGroup.groupName}</title>
+        
+        <script>
+            function populateEdit(postID) {
+                var cont = "#content_" + postID;
+                var edit = "#edit_btn_" + postID;
+                var area = "#edit_area_" + postID;
+                $(cont).hide();
+                $(edit).hide();
+                $(area).show();
+            }
+        </script>
+        
     </head>
     <body>
         <h1>${currentGroup.groupName}</h1>
@@ -59,18 +71,33 @@
             </c:forEach>
            
             <c:forEach items = "${currentPosts}" var = "post">
-                <div>
-                    ${post.author} wrote on ${post.date}:
+                <div id = "content_${post.postID}">
+                    <div>
+                        ${post.author} wrote on ${post.date}:
+                    </div>
+                    <div>
+                        ${post.content}
+                    </div>
+                    <c:if test="${currentGroup.groupOwner == user.accountNumber || post.authorID == user.accountNumber}">
+                        <form method ="post" action ="/vibe/update">
+                            <input name ="action" value ="deletePost" hidden>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <input id="deletePost" name="deletePost" value="Remove Post" type="submit">
+                        </form>
+                    </c:if>
                 </div>
-                <div>
-                    ${post.content}
-                </div>
-                <c:if test="${currentGroup.groupOwner == user.accountNumber || post.authorID == user.accountNumber}">
-                    <form method ="post" action ="/vibe/update">
-                        <input name ="action" value ="deletePost" hidden>
-                        <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
-                        <input id="deletePost" name="deletePost" value="Remove Post" type="submit">
-                    </form>
+                <c:if test="${post.authorID == user.accountNumber}">
+                    <div id="edit_btn_${post.postID}">
+                        <input type="button" value="Edit Post" onclick="populateEdit(${post.postID})">
+                    </div>
+                    <div id="edit_area_${post.postID}" hidden>
+                        <form method ="post" action ="/vibe/update">
+                            <input name ="action" value ="editPost" hidden>
+                            <textarea name="edit_data" cols="40" rows="5">${post.content}</textarea>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <input id="editPost" name="editPost" value="Edit Post" type="submit">
+                        </form>
+                    </div>
                 </c:if>
             </c:forEach>
     </body>

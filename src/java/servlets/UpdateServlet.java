@@ -348,24 +348,26 @@ public class UpdateServlet extends HttpServlet {
             if (action.equals("deletePost")) {
                 // get form data
                 int postInfo = Integer.valueOf(request.getParameter("postInfo"));
-                int userid = ((User)session.getAttribute("user")).getAccountNumber();
-                /* send delete, however only author can delete TODO: come back to this*/
-                String query = "DELETE FROM Posts WHERE (postID = " +postInfo+ /*" AND author = " +userid+*/ ");";
+
+                /* send delete*/
+                String query = "DELETE FROM Posts WHERE (postID = " +postInfo+ ");";
                 stmt.executeUpdate(query);
                 
-                // update session data
-                ArrayList<postBean> posts = ((ArrayList<postBean>)session.getAttribute("currentPosts"));
-                postBean toBeDeleted = null;
-                for(postBean p: posts) {
-                    if (p.getPostID() == postInfo){
-                        toBeDeleted = p;
-                        break;
-                    }
-                }
-                posts.remove(toBeDeleted);
-                session.setAttribute("currentPosts", posts);
                 response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
             } 
+            if (action.equals("editPost")) {
+                // get form data
+                int postInfo = Integer.valueOf(request.getParameter("postInfo"));
+                int userid = ((User)session.getAttribute("user")).getAccountNumber();
+                String content = request.getParameter("edit_data");
+                
+                /* modify content in table */
+                String query = "UPDATE Posts SET content = '" +content+ "' WHERE (postID = " +postInfo+
+                        " AND author = " +userid+ ");";
+                stmt.executeUpdate(query);
+               
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
             if (action.equals("delete_group")) {
                 int groupID = ((groupBean)session.getAttribute("currentGroup")).getGroupID();
                 
