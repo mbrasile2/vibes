@@ -151,6 +151,18 @@ public class UpdateServlet extends HttpServlet {
                 stmt.executeUpdate(query);
                 response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());                
             }
+            if (action.equals("comment")) {
+                String comment_data = request.getParameter("comment_data");
+                int acctNum = ((User)session.getAttribute("user")).getAccountNumber();
+                int postID = Integer.valueOf(request.getParameter("postID"));
+                
+                  // add post to database   
+                String query = "INSERT INTO Comments (author, content, Post) VALUES (" +acctNum+ ", '"
+                        +comment_data+ "', " +postID+ ");";
+                
+                stmt.executeUpdate(query);
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());                
+            }
             if (action.equals("delete_msg")) {
                 int mid = Integer.valueOf(request.getParameter("mid"));
                 
@@ -295,20 +307,6 @@ public class UpdateServlet extends HttpServlet {
                 } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-      
-                /* Remove from the session data
-                ArrayList<groupBean> gbeans = (ArrayList<groupBean>)session.getAttribute("groupList");
-                groupBean toBeEdited = null;
-                for (groupBean g : gbeans) {
-                    if (g.getGroupID() == gid) {
-                        toBeEdited = g;
-                        break;
-                    }
-                }
-                gbeans.remove(toBeEdited);
-                toBeEdited.setGroupName(gname);
-                gbeans.add(toBeEdited);
-                session.setAttribute("groupList", gbeans);*/
         
                 RequestDispatcher jsf = request.getRequestDispatcher("/groupSettings.jsp");
                 jsf.forward(request, response);
@@ -330,11 +328,7 @@ public class UpdateServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            if (accountNumber < 0) {
-                // user does not exist. return
-                return;
-            }
-            else {
+            if (accountNumber >= 0) {
                 // add user    
                 query = "INSERT INTO groupMembership (userID, groupID) VALUES (" +accountNumber+ ", "
                         +groupID+ ");";
@@ -344,6 +338,7 @@ public class UpdateServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
             }
             if (action.equals("deletePost")) {
                 // get form data
@@ -402,6 +397,28 @@ public class UpdateServlet extends HttpServlet {
                 } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
+                response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("unlikePost")) {
+                int userID = ((User)session.getAttribute("user")).getAccountNumber();
+                int postID = Integer.valueOf(request.getParameter("postInfo"));
+                
+                // remove like if it exists    
+                String query = "DELETE FROM postlikes WHERE (UserId = " +userID+ " AND "+
+                        "PostID = " +postID+ ");";
+                stmt.executeUpdate(query);
+                
+                response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("likePost")) {
+                int userID = ((User)session.getAttribute("user")).getAccountNumber();
+                int postID = Integer.valueOf(request.getParameter("postInfo"));
+                
+                // add like to table  
+                String query = "INSERT INTO postlikes (UserId, Postid) VALUES (" +userID+ ", "+
+                        postID+ ");";
+                stmt.executeUpdate(query);
                 
                 response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
             }
