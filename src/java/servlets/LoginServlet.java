@@ -128,27 +128,7 @@ public class LoginServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                query = "SELECT * FROM Posts WHERE (Author = " +returningUser.getAccountNumber()+
-                        ") ORDER BY postdate DESC;";
-                
-                ArrayList<Posts> postList = new ArrayList<>();
-               
-                try {
-                    ResultSet rs = stmt.executeQuery(query) ;
-                    while (rs.next()) {
-                        Posts p = new Posts();
-                        p.setPostID(rs.getInt("PostID"));
-                        p.setPostDate(rs.getDate("PostDate"));
-                        p.setContent(rs.getString("content"));
-                        postList.add(p);
-                    }    
-                
-                session.setAttribute("postlist", postList);
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }  
+
                 
             // get messages
              query = "SELECT * FROM Message WHERE (Receiver = " +returningUser.getAccountNumber()+

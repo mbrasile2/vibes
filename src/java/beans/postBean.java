@@ -48,4 +48,13 @@ public class postBean {
     private String author;
     private String content;
     private Date date;
+    private int authorID;
+
+    public int getAuthorID() {
+        return authorID;
+    }
+
+    public void setAuthorID(int authorID) {
+        this.authorID = authorID;
+    }
 }

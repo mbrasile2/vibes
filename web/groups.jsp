@@ -47,7 +47,7 @@
                         ${member.pageID}
                         <form method="post" action ="/vibe/update">
                             <input name ="action" id ="action" value ="leave_group" hidden>
-                            <input name ="groupLeaving" id ="groupLeaving" value ="${member.groupName}" hidden>
+                            <input name ="groupLeaving" id ="groupLeaving" value ="${member.groupID}" hidden>
                             <input value="Leave Group" type="submit">
                         </form>
                     </c:forEach>

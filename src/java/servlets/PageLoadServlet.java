@@ -45,7 +45,6 @@ public class PageLoadServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String url = request.getRequestURL().toString();
-
         String[] urlParts = url.split("/");
         int ID = (int)Long.parseLong(urlParts[urlParts.length-1]);
         
@@ -69,7 +68,7 @@ public class PageLoadServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
-            query = "SELECT * FROM Posts WHERE (Page = " +ID+ ");";
+            query = "SELECT * FROM Posts WHERE (Page = " +ID+ ") ORDER BY postdate DESC;";
             ArrayList<postBean> currentPosts = new ArrayList<>();
             
             try {
@@ -80,6 +79,7 @@ public class PageLoadServlet extends HttpServlet {
                         p.setPostID(rs.getInt("postID"));
                         p.setDate(rs.getDate("postdate"));
                         p.setAuthor((rs.getObject("author", Integer.class)).toString());
+                        p.setAuthorID(Integer.valueOf(p.getAuthor()));
                         currentPosts.add(p);
                     }
                 } catch (SQLException ex) {
@@ -129,6 +129,24 @@ public class PageLoadServlet extends HttpServlet {
                 session.setAttribute("currentGroup", g);
                 RequestDispatcher jsp;
                 jsp = request.getRequestDispatcher("/groupjsp.jsp");
+                jsp.forward(request,response);
+            }
+            else {
+                try {
+                    query = "SELECT firstname, lastname, ownerid FROM pages JOIN user ON "
+                            + "pages.ownerid = user.accountNumber where pageID = " +ID+ ";"; 
+                    ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            g.setGroupName(rs.getString("firstname") +" "+ rs.getString("lastname") + "'s Wall");
+                            g.setGroupOwner(rs.getInt("ownerid"));
+                            g.setPageID(ID);
+                        }
+                    } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                session.setAttribute("currentGroup", g);
+                RequestDispatcher jsp;
+                jsp = request.getRequestDispatcher("/pagejsp.jsp");
                 jsp.forward(request,response);
             }
         }catch (SQLException ex) {

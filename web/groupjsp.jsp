@@ -38,7 +38,24 @@
                     <input id="add-submit" name="add-submit" value="Add User" type="submit">
                 </div>
             </form>
+                <hr>
+                <form method ="post" action ="/vibe/update" id ="page_post">
+                    <input name ="action" id ="action" value ="post" hidden>
+                    <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
+                    <input id="post-submit" name="post-submit" value="Post!" type="submit">
+                </form>
             </c:if>
+            <hr>
+            <c:forEach var="g" items = "${groupMembership}">
+                <c:if test="${g.groupID == currentGroup.groupID}">
+                    <form method ="post" action ="/vibe/update" id ="page_post">
+                        <input name ="action" id ="action" value ="post" hidden>
+                        <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
+                        <input id="post-submit" name="post-submit" value="Post!" type="submit">
+                    </form>
+                </c:if>
+            </c:forEach>
+           
             <c:forEach items = "${currentPosts}" var = "post">
                 <div>
                     ${post.author} wrote on ${post.date}:
@@ -46,6 +63,13 @@
                 <div>
                     ${post.content}
                 </div>
+                <c:if test="${currentGroup.groupOwner == user.accountNumber || post.authorID == user.accountNumber}">
+                    <form method ="post" action ="/vibe/update">
+                        <input name ="action" value ="deletePost" hidden>
+                        <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                        <input id="deletePost" name="deletePost" value="Remove Post" type="submit">
+                    </form>
+                </c:if>
             </c:forEach>
     </body>
 </html>

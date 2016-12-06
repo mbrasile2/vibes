@@ -7,6 +7,7 @@ package servlets;
 
 import beans.groupBean;
 import beans.message;
+import beans.postBean;
 import entities.Posts;
 import entities.User;
 import java.io.IOException;
@@ -145,32 +146,10 @@ public class UpdateServlet extends HttpServlet {
                 
                   // add post to database   
                 String query = "INSERT INTO Posts (author, content, page) VALUES (" +acctNum+ ", '"
-                        +post_data+ "', " +session.getAttribute("pageID")+ ");";
+                        +post_data+ "', " +((groupBean)session.getAttribute("currentGroup")).getPageID()+ ");";
                 
                 stmt.executeUpdate(query);
-                
-                // add post into the session data
-                query = "SELECT * FROM Posts WHERE (Author = " +acctNum+
-                        ") ORDER BY postdate DESC;";
-                
-                ArrayList<Posts> postList = new ArrayList<>();
-               
-                try {
-                    ResultSet rs = stmt.executeQuery(query) ;
-                    while (rs.next()) {
-                        Posts p = new Posts();
-                        p.setPostID(rs.getInt("PostID"));
-                        p.setPostDate(rs.getDate("PostDate"));
-                        p.setContent(rs.getString("content"));
-                        postList.add(p);
-                    }    
-                
-                    session.setAttribute("postlist", postList);
-                    response.sendRedirect("./wall.jsp");
-                
-                } catch (SQLException ex) {
-                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }  
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());                
             }
             if (action.equals("delete_msg")) {
                 int mid = Integer.valueOf(request.getParameter("mid"));
@@ -276,14 +255,29 @@ public class UpdateServlet extends HttpServlet {
                 response.sendRedirect("./groups.jsp");
                 return;
             }
-            if (action.equals("leave_group") {
-                // update group membership
-                String query6 = "DELETE FROM GroupMembership WHERE (groupID = ;";
+            if (action.equals("leave_group")) {
+                // get form data
+                int groupLeaving = Integer.valueOf(request.getParameter("groupLeaving"));
+                int userid = ((User)session.getAttribute("user")).getAccountNumber();
+                // update group membershipa
+                String query = "DELETE FROM GroupMembership WHERE (groupID = " +groupLeaving+ " AND userID = " +userid+ ");";
                 try {
-                    stmt.executeUpdate(query6);
+                    stmt.executeUpdate(query);
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                // update session data
+                ArrayList<groupBean> groupMembership = ((ArrayList<groupBean>)session.getAttribute("groupMembership"));
+                groupBean toBeDeleted = null;
+                for (groupBean g : groupMembership) {
+                    if (g.getGroupID() == groupLeaving) {
+                        toBeDeleted = g;
+                        break;
+                    }
+                }
+                groupMembership.remove(toBeDeleted);
+                session.setAttribute("groupMembership", groupMembership);
+                response.sendRedirect("/vibe/groups.jsp");
             }   
             if (action.equals("edit_group")) {
                 String gname = request.getParameter("gname");
@@ -346,6 +340,27 @@ public class UpdateServlet extends HttpServlet {
                 }
             }
             }
+            if (action.equals("deletePost")) {
+                // get form data
+                int postInfo = Integer.valueOf(request.getParameter("postInfo"));
+                int userid = ((User)session.getAttribute("user")).getAccountNumber();
+                /* send delete, however only author can delete TODO: come back to this*/
+                String query = "DELETE FROM Posts WHERE (postID = " +postInfo+ /*" AND author = " +userid+*/ ");";
+                stmt.executeUpdate(query);
+                
+                // update session data
+                ArrayList<postBean> posts = ((ArrayList<postBean>)session.getAttribute("currentPosts"));
+                postBean toBeDeleted = null;
+                for(postBean p: posts) {
+                    if (p.getPostID() == postInfo){
+                        toBeDeleted = p;
+                        break;
+                    }
+                }
+                posts.remove(toBeDeleted);
+                session.setAttribute("currentPosts", posts);
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
+            } 
             
         } catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
