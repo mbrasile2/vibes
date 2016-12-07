@@ -10,24 +10,52 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        
         <title>Messages</title>
+        
+        <style>
+            body {
+                margin-left: 10%;
+                margin-right: 10%;
+            }
+        </style>
     </head>
     <body>
-        <h1>Vibe</h1>
-        <hr>
+        <c:choose>
+            <c:when test="${user != null}">   
+            <%@include file="/pages/loggedin-header.jsp"%>
+            </c:when>
+        <c:otherwise>
+            <jsp:forward page="/index.jsp" />
+        </c:otherwise>
+        </c:choose>
         
-        <div>
-                <input type='button' value = 'Send a message' onclick=''>
-        </div>
-        <div id ="message_area">
-            <form method ="post" action ="./update">
+        <form class="form-horizontal" method ="post" action ="./update">
+            <fieldset>
+                <legend>Send a message</legend>
                 <input name ="action" id ="action" value ="send_msg" hidden>
                 <input name ="sender" id ="sender" value ="${user.accountNumber}" hidden>
-                <label>Receiver (email address):</label>
-                <input name = "receiver" id="receiver" type="text"> 
-                <textarea name="content" id="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
-                <input id="msg-submit" name="msg-submit" value="Send Message" type="submit">
-            </form>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-sm-1 control-label">Receiver:</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" name=receiver" size = "35" placeholder="Email">
+                    </div>
+                </div>
+                <div class="form-group">
+                        <label for="input" class="col-sm-1 control-label">Message:</label>
+                        <div class="col-sm-3">
+                        <textarea name="content" id="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
+                    </div>
+                </div>
+                <label class="col-sm-1 control-label"></label>
+                <input id="msg-submit" name="msg-submit" class="btn btn-primary" value="Send Message" type="submit">
+            </fieldset>
+        </form>
+            
         </div>
         <h2> Your Messages: </h2>
         <c:forEach items="${messages}" var = "m">

@@ -12,9 +12,19 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         
         <title>${currentGroup.groupName}</title>
+        
+        <style>
+            body {
+                margin-left: 10%;
+                margin-right: 10%;
+            }
+        </style>
         
         <script>
             function populateEdit(postID) {
@@ -38,20 +48,21 @@
         
     </head>
     <body>
+        
+        <c:choose>
+            <c:when test="${user != null}">   
+            <%@include file="/pages/loggedin-header.jsp"%>
+            </c:when>
+        <c:otherwise>
+            <jsp:forward page="/index.jsp" />
+        </c:otherwise>
+        </c:choose>
         <c:if test="${isGroup || ((not isGroup) && (currentGroup.groupOwner ne user.accountNumber))}">
             <h1>${currentGroup.groupName}</h1>
         </c:if>
         <c:if test="${not isGroup && currentGroup.groupOwner eq user.accountNumber}">
             <h1>My Wall</h1>
         </c:if>
-        <c:choose>
-            <c:when test="${user != null}">   
-            <input type='button' value = 'Logout' onclick="location.href='/vibe/logout'">
-            <hr>
-            </c:when>
-        <c:otherwise>
-        </c:otherwise>
-        </c:choose>
             <hr>
             <c:if test="${currentGroup.groupOwner == user.accountNumber && isGroup}">
                 <input type ="button" value="Edit Group Settings" onclick="location.href='/vibe/groupSettings.jsp'">

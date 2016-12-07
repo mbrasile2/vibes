@@ -9,9 +9,31 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        
         <title>Manage Group Settings</title>
+        
+        <style>
+            body {
+                margin-left: 10%;
+                margin-right: 10%;
+            }
+        </style>
+        
     </head>
     <body>
+        <c:choose>
+            <c:when test="${user != null}">   
+            <%@include file="/pages/loggedin-header.jsp"%>
+            </c:when>
+        <c:otherwise>
+            <jsp:forward page="/index.jsp" />
+        </c:otherwise>
+            </c:choose>
+        
         <h1>Manage ${currentGroup.groupName} Settings</h1>
         <c:choose>
             <c:when test="${user != null}">
