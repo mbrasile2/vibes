@@ -24,14 +24,37 @@
         </script>
     </head>
     <body>
-        <h1>Vibe</h1>
+        <h1>Vibes</h1>
         
             <hr>
+             <c:choose>
+            <c:when test="${employee != null}">
+                
+            <input type='button' value = 'Logout' onclick="location.href='/vibes/logout'">
+            <hr>
+            Welcome ${employee.firstName} ${employee.lastName}!
+            <div>
+                <input type='button' value = 'Manage Advertisments' onclick="location.href='/vibe/advertisements.jsp'">
+            </div>
+            <div>
+                <input type='button' value = 'Record Transaction' onclick="location.href='./vibe/wall.jsp'">
+            </div>
+            <div>
+                <input type='button' value = 'Customer Information' onclick="location.href='./vibe/groups.jsp'">
+            </div>
+            <div>
+                <input type='button' value = 'Best Seller List' onclick="location.href='./vibe/groups.jsp'">
+            </div>
+            <div>
+                <input type='button' value = 'Item Suggestion List' onclick="location.href='./vibe/groups.jsp'">
+            </div>
+            </c:when>
+            <c:otherwise>
         <div id ='login-area'>
-            <form id = "login" method="post" onclick ="./employee-login">
+            <form id = "login" method="post" action ="./employeeLogin">
                 <div>
                     <label>SSN:</label>
-                    <input name="user" id="user" size="36" type="text" value="" required="true">
+                    <input name="ssn" id="ssn" size="36" type="text" value="" required="true">
                 </div>
                 <div>
                     <label>Password:</label>
@@ -40,5 +63,7 @@
                 <input id="login-submit" name="login-submit" value="Login" type="submit">
             </form>
         </div>
+        </c:otherwise>
+        </c:choose>
     </body>
 </html>
