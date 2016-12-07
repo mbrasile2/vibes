@@ -84,10 +84,7 @@
                     <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
                     <input id="post-submit" name="post-submit" value="Post!" type="submit" class="btn btn-success">
                 </form>
-            </c:if>             
-                    
-            
-            
+            </c:if>              
             <c:forEach var="g" items = "${groupMembership}">
                 <c:if test="${g.groupID == currentGroup.groupID}">
                     <form method ="post" action ="/vibe/update" id ="page_post">
@@ -96,8 +93,10 @@
                         <input id="post-submit" name="post-submit" value="Post!" type="submit" class="btn btn-success">
                     </form>
                     <c:set var="isMember" value="true"/>
+                    </div>
                 </c:if>
             </c:forEach>
+
             <c:if test="${isMember eq 'false'}">
                 <form method ="post" action= "/vibe/update">  
                     <input name ="action" id ="action" value ="join_group" hidden>
