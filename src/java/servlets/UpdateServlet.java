@@ -139,6 +139,8 @@ public class UpdateServlet extends HttpServlet {
                 returningUser.setAccountNumber(accountNum);
                 
                 session.setAttribute("user", returningUser);
+                response.sendRedirect("/vibe/index.jsp");                
+
             }
             if (action.equals("post")) {
                 String post_data = request.getParameter("post_data");

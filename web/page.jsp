@@ -63,29 +63,35 @@
         <c:if test="${not isGroup && currentGroup.groupOwner eq user.accountNumber}">
             <h1>My Wall</h1>
         </c:if>
-            <hr>
             <c:if test="${currentGroup.groupOwner == user.accountNumber && isGroup}">
                 <input type ="button" value="Edit Group Settings" onclick="location.href='/vibe/groupSettings.jsp'">
-                <hr>
+            </c:if>
+            <div class="panel panel-default" style="margin: auto;width: 50%;">    
+            <div class="panel-heading">Recent Posts</div>
+                <div class="panel-body">
+            <c:if test="${currentGroup.groupOwner == user.accountNumber}">
+            <div style="margin: auto;width: 50%;">    
                 <form method ="post" action ="/vibe/update" id ="page_post">
                     <input name ="action" id ="action" value ="post" hidden>
                     <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
                     <input id="post-submit" name="post-submit" value="Post!" type="submit">
                 </form>
+            </div>
             </c:if>
-            <hr>
             <c:forEach var="g" items = "${groupMembership}">
                 <c:if test="${g.groupID == currentGroup.groupID}">
+                    <div style="margin: auto;width: 50%;">  
                     <form method ="post" action ="/vibe/update" id ="page_post">
                         <input name ="action" id ="action" value ="post" hidden>
                         <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
                         <input id="post-submit" name="post-submit" value="Post!" type="submit">
                     </form>
+                    </div>
                 </c:if>
             </c:forEach>
-           
+
             <c:forEach items = "${currentPosts}" var = "post">
-                <div id = "content_${post.postID}">
+                <div id = "content_${post.postID}" class="panel-body" style="margin: auto;width: 50%;">
                     <div>
                         ${post.author} wrote on ${post.date}:
                     </div>
@@ -184,15 +190,20 @@
                     </div>
                     </c:if>
                     <c:if test="${currentGroup.groupOwner == user.accountNumber || comment.authorID == user.accountNumber}">
-                        <form method ="post" action ="/vibe/update">
+                        <div>
+                            <form method ="post" action ="/vibe/update">
                             <input name ="action" value ="deleteComment" hidden>
                             <input name ="commentInfo" value ="${cxv.commentID}" hidden>
                             <input name="deleteComment" value="Remove Comment" type="submit">
-                        </form>
+                            </form>
+                        </div>
                     </c:if>  
                         </c:if>
                 </c:forEach>
              </c:if>
+                    <hr>
         </c:forEach>
+                  </div>
+  </div>
     </body>
 </html>

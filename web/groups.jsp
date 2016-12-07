@@ -39,7 +39,7 @@
             <input type='button' value = 'Make a new Group' onclick="">
         </div>
         <div id ="new_group">
-            <form method ="post" action ="./update">
+            <form method ="post" action ="/vibe/update">
                 <input name ="action" id ="action" value ="new_group" hidden>
                 <input name ="owner" id ="owner" value ="${user.accountNumber}" hidden>
                 <div>
@@ -47,7 +47,7 @@
                     <input name = "groupname" id="groupname" type="text"> 
                 </div> 
                 
-                <input id="new-group-submit" name="new-group-submit" value="Create Group" type="submit">
+                <input value="Create Group" type="submit">
             </form>
         </div>
                 <h2> Groups I own: </h2>
