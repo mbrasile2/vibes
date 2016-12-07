@@ -7,11 +7,8 @@ package servlets;
 
 import beans.groupBean;
 import beans.message;
-import beans.postBean;
-import entities.Posts;
 import entities.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -139,6 +136,8 @@ public class UpdateServlet extends HttpServlet {
                 returningUser.setAccountNumber(accountNum);
                 
                 session.setAttribute("user", returningUser);
+                response.sendRedirect("/vibe/index.jsp");                
+
             }
             if (action.equals("post")) {
                 String post_data = request.getParameter("post_data");
@@ -339,6 +338,41 @@ public class UpdateServlet extends HttpServlet {
                 }
             }
             response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("join_group")) {
+                int userID = Integer.valueOf(request.getParameter("userID"));
+                int groupID = Integer.valueOf(request.getParameter("groupID"));
+          
+                // add user    
+                String query = "INSERT INTO groupMembership (userID, groupID) VALUES (" +userID+ ", "
+                        +groupID+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //update session data
+                ArrayList<groupBean> groupMembership = (ArrayList<groupBean>)session.getAttribute("groupMembership");
+                groupBean gb = new groupBean();
+                
+                query = "SELECT * FROM fbGroup WHERE (GroupID = " +groupID+ ");";
+                try {
+                    ResultSet rs = stmt.executeQuery(query) ;
+                    while (rs.next()) {
+                        gb.setGroupID(groupID);
+                        gb.setPageID(rs.getInt("pageID"));
+                        gb.setGroupName(rs.getString("GroupName"));
+                        gb.setGroupOwner(rs.getInt("owner"));
+                        groupMembership.add(gb);
+                    }   
+               
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            session.setAttribute("groupMembership", groupMembership);
+            response.sendRedirect("/vibe/page/" + gb.getPageID());
+            
             }
             if (action.equals("deletePost")) {
                 // get form data

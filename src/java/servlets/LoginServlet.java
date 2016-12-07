@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import entities.User;
-import entities.Posts;
 import java.util.ArrayList;
 /**
  *

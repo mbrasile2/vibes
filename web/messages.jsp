@@ -42,13 +42,13 @@
                 <div class="form-group">
                     <label for="inputEmail" class="col-sm-1 control-label">Receiver:</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" name=receiver" size = "35" placeholder="Email">
+                        <input type="text" class="form-control" name="receiver" size = "35" placeholder="Email">
                     </div>
                 </div>
                 <div class="form-group">
                         <label for="input" class="col-sm-1 control-label">Message:</label>
                         <div class="col-sm-3">
-                        <textarea name="content" id="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
+                        <textarea name="content" cols="40" rows="5" placeholder="Type your message here."></textarea>
                     </div>
                 </div>
                 <label class="col-sm-1 control-label"></label>
@@ -59,18 +59,27 @@
         </div>
         <h2> Your Messages: </h2>
         <c:forEach items="${messages}" var = "m">
-            <hr>
-            ${m.sender}  wrote on ${m.date} :
-            <br>
-            ${m.content}
-            <br>
-            <form method='post' action ='./update'>
-                <!-- hidden parameter for action -->
-                <input name ="action" id ="action" value ="delete_msg" hidden>
-                <input name ="mid" id ="action" value ="${m.mid}" hidden>
+            
+            <div class="panel panel-info" style="width:550px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">${m.sender}  wrote on ${m.date} :</h3>
+                </div>
+            <div class="panel-body">
+                ${m.content}
+                <br>
+                <div style = "margin-left: 50%">
+                    <form method='post' action ='./update'>
+                        <!-- hidden parameter for action -->
+                        <input name ="action" id ="action" value ="delete_msg" hidden>
+                        <input name ="mid" id ="action" value ="${m.mid}" hidden>
                 
-                <input value="Delete message" type="submit">
-            </form>
+                        <input value="Delete message" type="submit" class="btn btn-default">
+                    </form>
+                </div>
+            </div>
+        </div>
+ 
+            
         </c:forEach>
     </body>
 </html>
