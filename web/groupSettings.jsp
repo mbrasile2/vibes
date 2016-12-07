@@ -29,6 +29,18 @@
                 <input value="Update Group" type="submit">
             </form>
                 
+                <form method ="post" action= "/vibe/update">  
+                <input name ="action" id ="action" value ="add_user" hidden>
+                <input name ="group" id ="action" value ="${currentGroup.groupID}" hidden>
+                <div>
+                    <label>Add user (enter Email):</label>
+                    <input name="email" id="email" size="36" type="text" value="" required="true">
+                </div>
+                <input id="add-submit" name="add-submit" value="Add User" type="submit">
+                <br>
+               </form>
+                
+                
             <c:forEach items = "${groupUsers}" var = "u">
                 <div>
                     <form method="post" action="/vibe/update">

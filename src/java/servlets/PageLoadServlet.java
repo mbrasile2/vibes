@@ -5,9 +5,10 @@
  */
 package servlets;
 
+import beans.commentBean;
+import beans.commentLikeBean;
 import beans.groupBean;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 
 import beans.postBean;
+import beans.postLikeBean;
 import java.util.ArrayList;
 import beans.userBean;
 
@@ -71,6 +73,8 @@ public class PageLoadServlet extends HttpServlet {
             Statement stmt = conn.createStatement();
             query = "SELECT * FROM Posts WHERE (Page = " +ID+ ") ORDER BY postdate DESC;";
             ArrayList<postBean> currentPosts = new ArrayList<>();
+            ArrayList<commentBean> commentList = new ArrayList<>();
+            ArrayList<commentLikeBean> commentLikes = new ArrayList<>();
             
             try {
                 ResultSet rs = stmt.executeQuery(query);
@@ -86,6 +90,7 @@ public class PageLoadServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            ArrayList<postLikeBean> postLikes = new ArrayList<>();
             for (postBean p : currentPosts) {
                 try {
                     query = "SELECT firstname, lastname FROM user WHERE AccountNumber = " +p.getAuthor()+ ";";
@@ -98,9 +103,61 @@ public class PageLoadServlet extends HttpServlet {
                     } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                // add postlikes to request
+                try {
+                    query = "SELECT userID FROM postLikes WHERE postID = " +p.getPostID()+ ";";
+                    ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            postLikeBean plb = new postLikeBean();
+                            plb.setPostID(p.getPostID());
+                            plb.setUserID(rs.getInt("UserID"));
+                            postLikes.add(plb);
+                        }
+                    } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                // add post comments to request
+                try {
+                    query = "SELECT post, content, author, commentID, commentDate, firstname, lastname FROM comments"
+                        + " JOIN User ON comments.author = User.accountNumber WHERE post = " +p.getPostID()+
+                            " ORDER BY commentdate DESC;";
+                        
+                    ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            commentBean c = new commentBean();
+                            c.setPostID(p.getPostID());
+                            c.setAuthorID(rs.getInt("author"));
+                            c.setContent(rs.getString("content"));
+                            c.setDate(rs.getDate("commentDate"));
+                            c.setAuthor(rs.getString("firstName") + " " + rs.getString("lastName"));
+                            c.setCommentID(rs.getInt("commentID"));
+                            commentList.add(c);
+                        }
+                    } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }    
+            }
+            // add likes to request
+            for (commentBean c : commentList) {
+                try {
+                    query = "SELECT userID FROM commentLikes WHERE commentID = " +c.getCommentID()+ ";";
+                    ResultSet rs = stmt.executeQuery(query);
+                        while (rs.next()) {
+                            commentLikeBean clb = new commentLikeBean();
+                            clb.setCommentID(c.getCommentID());
+                            clb.setUserID(rs.getInt("UserID"));
+                            commentLikes.add(clb);
+                        }
+                    } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             // add posts to the session
-            session.setAttribute("currentPosts", currentPosts);
+            request.setAttribute("currentPosts", currentPosts);
+            request.setAttribute("postLikes", postLikes);
+            request.setAttribute("commentList", commentList);
+            request.setAttribute("commentLikes", commentLikes);
+            
             boolean primary = false;
             try {
                     query = "SELECT * FROM pages WHERE PageID = " +ID+ ";";
@@ -114,8 +171,11 @@ public class PageLoadServlet extends HttpServlet {
                     } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            boolean isGroup = false;
             if (primary == false) {
                 try {
+                    isGroup = true;
+                    session.setAttribute("isGroup", true);
                     query = "SELECT * FROM fbgroup WHERE PageID = " +ID+ ";";
                     ResultSet rs = stmt.executeQuery(query);
                         while (rs.next()) {
@@ -151,10 +211,11 @@ public class PageLoadServlet extends HttpServlet {
                 session.setAttribute("groupUsers", users);
                 session.setAttribute("currentGroup", g);
                 RequestDispatcher jsp;
-                jsp = request.getRequestDispatcher("/groupjsp.jsp");
+                jsp = request.getRequestDispatcher("/page.jsp");
                 jsp.forward(request,response);
             }
             else {
+                session.setAttribute("isGroup", false);
                 try {
                     query = "SELECT firstname, lastname, ownerid FROM pages JOIN user ON "
                             + "pages.ownerid = user.accountNumber where pageID = " +ID+ ";"; 
@@ -169,7 +230,7 @@ public class PageLoadServlet extends HttpServlet {
                 }
                 session.setAttribute("currentGroup", g);
                 RequestDispatcher jsp;
-                jsp = request.getRequestDispatcher("/pagejsp.jsp");
+                jsp = request.getRequestDispatcher("/page.jsp");
                 jsp.forward(request,response);
             }
         }catch (SQLException ex) {

@@ -7,8 +7,6 @@ package servlets;
 
 import beans.groupBean;
 import beans.message;
-import entities.Fbgroup;
-import entities.Message;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

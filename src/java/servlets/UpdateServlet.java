@@ -156,7 +156,7 @@ public class UpdateServlet extends HttpServlet {
                 int acctNum = ((User)session.getAttribute("user")).getAccountNumber();
                 int postID = Integer.valueOf(request.getParameter("postID"));
                 
-                  // add post to database   
+                  // add comment to database   
                 String query = "INSERT INTO Comments (author, content, Post) VALUES (" +acctNum+ ", '"
                         +comment_data+ "', " +postID+ ");";
                 
@@ -350,6 +350,16 @@ public class UpdateServlet extends HttpServlet {
                 
                 response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
             } 
+            if (action.equals("deleteComment")) {
+                // get form data
+                int commentInfo = Integer.valueOf(request.getParameter("commentInfo"));
+
+                /* send delete*/
+                String query = "DELETE FROM Comments WHERE (commentID = " +commentInfo+ ");";
+                stmt.executeUpdate(query);
+                
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
             if (action.equals("editPost")) {
                 // get form data
                 int postInfo = Integer.valueOf(request.getParameter("postInfo"));
@@ -358,6 +368,19 @@ public class UpdateServlet extends HttpServlet {
                 
                 /* modify content in table */
                 String query = "UPDATE Posts SET content = '" +content+ "' WHERE (postID = " +postInfo+
+                        " AND author = " +userid+ ");";
+                stmt.executeUpdate(query);
+               
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("editComment")) {
+                // get form data
+                int commentInfo = Integer.valueOf(request.getParameter("commentInfo"));
+                int userid = ((User)session.getAttribute("user")).getAccountNumber();
+                String content = request.getParameter("edit_data");
+                
+                /* modify content in table */
+                String query = "UPDATE Comments SET content = '" +content+ "' WHERE (commentID = " +commentInfo+
                         " AND author = " +userid+ ");";
                 stmt.executeUpdate(query);
                
@@ -418,6 +441,28 @@ public class UpdateServlet extends HttpServlet {
                 // add like to table  
                 String query = "INSERT INTO postlikes (UserId, Postid) VALUES (" +userID+ ", "+
                         postID+ ");";
+                stmt.executeUpdate(query);
+                
+                response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("unlikeComment")) {
+                int userID = ((User)session.getAttribute("user")).getAccountNumber();
+                int commentID = Integer.valueOf(request.getParameter("commentInfo"));
+                
+                // remove like if it exists    
+                String query = "DELETE FROM commentlikes WHERE (UserId = " +userID+ " AND "+
+                        "commentID = " +commentID+ ");";
+                stmt.executeUpdate(query);
+                
+                response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
+            }
+            if (action.equals("likeComment")) {
+                int userID = ((User)session.getAttribute("user")).getAccountNumber();
+                int commentID = Integer.valueOf(request.getParameter("commentInfo"));
+                
+                // add like to table  
+                String query = "INSERT INTO commentlikes (UserId, Commentid) VALUES (" +userID+ ", "+
+                        commentID+ ");";
                 stmt.executeUpdate(query);
                 
                 response.sendRedirect("/vibe/page/" +((groupBean)session.getAttribute("currentGroup")).getPageID());
