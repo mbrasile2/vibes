@@ -136,6 +136,15 @@ public class UpdateServlet extends HttpServlet {
                 returningUser.setAccountNumber(accountNum);
                 
                 session.setAttribute("user", returningUser);
+                ArrayList<Integer> groupPages = new ArrayList<>();
+                session.setAttribute("groupIDs", groupPages);
+                ArrayList<message> messageList = new ArrayList<>();
+                session.setAttribute("messages", messageList);
+                ArrayList<groupBean> groupList = new ArrayList<>();
+                session.setAttribute("groups", groupList);
+                ArrayList<groupBean> groupMembership2 = new ArrayList<>();
+                session.setAttribute("groupMembership", groupMembership2);
+                
                 response.sendRedirect("/vibe/index.jsp");                
 
             }
@@ -307,8 +316,7 @@ public class UpdateServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
         
-                RequestDispatcher jsf = request.getRequestDispatcher("/groupSettings.jsp");
-                jsf.forward(request, response);
+                response.sendRedirect("/vibe/page/" + ((groupBean)session.getAttribute("currentGroup")).getPageID());
                 return;
             }
             if (action.equals("add_user")) {

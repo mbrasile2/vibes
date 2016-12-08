@@ -27,6 +27,8 @@
         <h1>Vibe</h1>
         
             <hr>
+            <c:choose>
+            <c:when test="${employee eq null}"> 
         <div id ='login-area'>
             <form id = "login" method="post" onclick ="./employee-login">
                 <div>
@@ -40,5 +42,13 @@
                 <input id="login-submit" name="login-submit" value="Login" type="submit">
             </form>
         </div>
+            </c:when>
+                <c:when test="${employee ne null}">
+                    Welcome ${employee.firstName} ${employee.LastName}!
+                </c:when>
+                    
+                    <c:if test="employee.
+            </c:choose>
+                    
     </body>
 </html>

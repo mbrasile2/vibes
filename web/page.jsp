@@ -75,13 +75,14 @@
             </c:if>
             <div class="panel panel-default" style="margin: auto;width: 70%;">    
             <div class="panel-heading">Recent Posts</div>
-                <div class="panel-body" style="margin: auto;width: 50%;">
+                <div class="panel-body" style="margin: auto;width: 85%;">
                     <c:set var="isMember" value="false"/>
             <c:if test="${currentGroup.groupOwner == user.accountNumber}">
                 <c:set var="isMember" value="true"/>
                 <form method ="post" action ="/vibe/update" id ="page_post">
                     <input name ="action" id ="action" value ="post" hidden>
                     <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
+                    <br>
                     <input id="post-submit" name="post-submit" value="Post!" type="submit" class="btn btn-success">
                 </form>
             </c:if>              
@@ -90,6 +91,7 @@
                     <form method ="post" action ="/vibe/update" id ="page_post">
                         <input name ="action" id ="action" value ="post" hidden>
                         <textarea name="post_data" id="post_data" cols="40" rows="5" placeholder="What's on your mind?"></textarea>
+                        <br>
                         <input id="post-submit" name="post-submit" value="Post!" type="submit" class="btn btn-success">
                     </form>
                     <c:set var="isMember" value="true"/>
@@ -97,7 +99,7 @@
                 </c:if>
             </c:forEach>
 
-            <c:if test="${isMember eq 'false'}">
+            <c:if test="${isMember eq 'false && isGroup'}">
                 <form method ="post" action= "/vibe/update">  
                     <input name ="action" id ="action" value ="join_group" hidden>
                     <input name ="groupID" id ="action" value ="${currentGroup.groupID}" hidden>
@@ -119,6 +121,51 @@
                         <br>
                         <br>
                     </div>
+                </div>
+                    
+                    <jsp:useBean id= "tempBean" scope= "page" class= "beans.postLikeBean"> </jsp:useBean>
+                    <jsp:setProperty name="tempBean" property="userID" value = "${user.accountNumber}"/>  
+                    <jsp:setProperty name="tempBean" property="postID" value = "${post.postID}"/>  
+                    
+                    <c:if test="${not fn:contains(postLikes, tempBean)}">
+                        <form method ="post" action ="/vibe/update" style="display: inline-block;">
+                            <input name ="action" value ="likePost" hidden>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <input id="likePost" name="likePost" value="Like Post" type="submit" class="btn btn-default btn-xs">
+                        </form>
+                    </c:if>                    
+                    <c:if test="${fn:contains(postLikes, tempBean)}">
+                        <form method ="post" action ="/vibe/update" style="display: inline-block;">
+                            <input name ="action" value ="unlikePost" hidden>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <input id="unlikePost" name="unlikePost" value="Unlike Post" type="submit" class="btn btn-danger btn-xs">
+                        </form>
+                    </c:if>
+                    <c:if test="${currentGroup.groupOwner == user.accountNumber || post.authorID == user.accountNumber}">
+                        <form method ="post" action ="/vibe/update" style="display: inline-block;">
+                            <input name ="action" value ="deletePost" hidden>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <input id="deletePost" name="deletePost" value="Remove Post" type="submit" class="btn btn-default btn-xs">
+                        </form>
+                    </c:if>
+                    
+                
+                <c:if test="${post.authorID == user.accountNumber}">
+                    <span id="edit_btn_${post.postID}">
+                        <input type="button" value="Edit Post" onclick="populateEdit(${post.postID})" class="btn btn-default btn-xs" >
+                    </span>
+                    <div id="edit_area_${post.postID}" hidden>
+                        <form method ="post" action ="/vibe/update" style="display: inline-block;">
+                            <input name ="action" value ="editPost" hidden>
+                            <textarea name="edit_data" cols="40" rows="5">${post.content}</textarea>
+                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
+                            <br>
+                            <input id="editPost" name="editPost" value="Edit Post" type="submit" class="btn btn-success">
+                            <hr>
+                        </form>
+                    </div>
+                </c:if>
+                    
                     <div id="comm_btn_${post.postID}">
                         <input type="button" value="Comment on Post" onclick="populateComm(${post.postID})" class="btn btn-success">
                     </div>
@@ -127,50 +174,15 @@
                             <input name ="action" value ="comment" hidden>
                             <input name ="postID" value ="${post.postID}" hidden>
                             <textarea name="comment_data" cols="40" rows="5" placeholder="Reply here"></textarea>
+                            <br>
                             <input id="comment-submit" name="comment-submit" value="Comment" type="submit" class="btn btn-success">
                         </form>
+                            
                     </div>
-                    <jsp:useBean id= "tempBean" scope= "page" class= "beans.postLikeBean"> </jsp:useBean>
-                    <jsp:setProperty name="tempBean" property="userID" value = "${user.accountNumber}"/>  
-                    <jsp:setProperty name="tempBean" property="postID" value = "${post.postID}"/>  
-                    
-                    <c:if test="${not fn:contains(postLikes, tempBean)}">
-                        <form method ="post" action ="/vibe/update">
-                            <input name ="action" value ="likePost" hidden>
-                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
-                            <input id="likePost" name="likePost" value="Like Post" type="submit" class="btn btn-success">
-                        </form>
-                    </c:if>                    
-                    <c:if test="${fn:contains(postLikes, tempBean)}">
-                        <form method ="post" action ="/vibe/update">
-                            <input name ="action" value ="unlikePost" hidden>
-                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
-                            <input id="unlikePost" name="unlikePost" value="Unlike Post" type="submit" class="btn btn-success">
-                        </form>
-                    </c:if>
-                    <c:if test="${currentGroup.groupOwner == user.accountNumber || post.authorID == user.accountNumber}">
-                        <form method ="post" action ="/vibe/update">
-                            <input name ="action" value ="deletePost" hidden>
-                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
-                            <input id="deletePost" name="deletePost" value="Remove Post" type="submit" class="btn btn-success">
-                        </form>
-                    </c:if>
-                    
-                </div>
-                <c:if test="${post.authorID == user.accountNumber}">
-                    <div id="edit_btn_${post.postID}">
-                        <input type="button" value="Edit Post" onclick="populateEdit(${post.postID})" class="btn btn-success">
-                    </div>
-                    <div id="edit_area_${post.postID}" hidden>
-                        <form method ="post" action ="/vibe/update">
-                            <input name ="action" value ="editPost" hidden>
-                            <textarea name="edit_data" cols="40" rows="5">${post.content}</textarea>
-                            <input name ="postInfo" id ="postInfo" value ="${post.postID}" hidden>
-                            <input id="editPost" name="editPost" value="Edit Post" type="submit" class="btn btn-success">
-                        </form>
-                    </div>
-                </c:if>
+                            <hr>
                 <c:if test="${not empty commentList}">
+                    <hr>
+                    <div style="margin: auto; width:80%">
                     <c:forEach items="${commentList}" var ="cxv">
                         <div id ="comm_content_${cxv.commentID}">
                         <c:if test="${cxv.postID == post.postID}">
@@ -187,45 +199,52 @@
                         <jsp:setProperty name="tempBean2" property="commentID" value = "${cxv.commentID}"/>  
                     
                     <c:if test="${not fn:contains(commentLikes, tempBean2)}">
-                        <form method ="post" action ="/vibe/update">
+                        <form method ="post" action ="/vibe/update" style="display: inline-block">
                             <input name ="action" value ="likeComment" hidden>
                             <input name ="commentInfo" id ="commentInfo" value ="${cxv.commentID}" hidden>
-                            <input id="likeComment" name="likeComment" value="Like Comment" type="submit" class="btn btn-success">
+                            <input id="likeComment" name="likeComment" value="Like Comment" type="submit" class="btn btn-success btn-xs">
                         </form>
                     </c:if>                    
                         <c:if test="${fn:contains(commentLikes, tempBean2)}">
-                            <form method ="post" action ="/vibe/update">
+                            <form method ="post" action ="/vibe/update" style="display: inline-block">
                                <input name ="action" value ="unlikeComment" hidden>
                                <input name ="commentInfo" id ="commentInfo" value ="${cxv.commentID}" hidden>
-                               <input id="unlikeComment" name="unlikeComment" value="Unlike Comment" type="submit" class="btn btn-danger">
+                               <input id="unlikeComment" name="unlikeComment" value="Unlike Comment" type="submit" class="btn btn-danger btn-xs">
                             </form>
                         </c:if>
                     <c:if test="${cxv.authorID == user.accountNumber}">
-                    <div id="comm_edit_btn_${cxv.commentID}">
-                        <input type="button" value="Edit Comment" onclick="populateEditComm(${cxv.commentID})" class="btn btn-success">
-                    </div>
-                    <div id="comm_edit_area_${cxv.commentID}" hidden>
+                    <span id="comm_edit_btn_${cxv.commentID}">
+                        <input type="button" value="Edit Comment" onclick="populateEditComm(${cxv.commentID})" class="btn btn-success btn-xs">
+                    </span>
+                    <span id="comm_edit_area_${cxv.commentID}" hidden>
                         <form method ="post" action ="/vibe/update">
                             <input name ="action" value ="editComment" hidden>
                             <textarea name="edit_data" cols="40" rows="5">${cxv.content}</textarea>
                             <input name ="commentInfo" id ="commentInfo" value ="${cxv.commentID}" hidden>
-                            <input class="btn btn-danger" value="Edit Comment" type="submit" class="btn btn-default">
+                            <input class="btn btn-danger" value="Edit Comment" type="submit" class="btn btn-default btn-xs">
                         </form>
-                    </div>
+                    </span>
                     </c:if>
                     <c:if test="${currentGroup.groupOwner == user.accountNumber || comment.authorID == user.accountNumber}">
-                        <div>
-                            <form method ="post" action ="/vibe/update">
+         
+                            <form method ="post" action ="/vibe/update" style="display: inline-block">
                             <input name ="action" value ="deleteComment" hidden>
                             <input name ="commentInfo" value ="${cxv.commentID}" hidden>
-                            <input name="deleteComment" value="Remove Comment" type="submit" class="btn btn-default">
+                            <input name="deleteComment" value="Remove Comment" type="submit" class="btn btn-default btn-xs">
                             </form>
-                        </div>
-                    </c:if>  
+                     
+                            </div>
+                            <hr>
+                    </c:if> 
+                            <hr>
                         </c:if>
+                    
                 </c:forEach>
+                           
+                             </div>
              </c:if>
-                    <hr>
+                            
+                            
         </c:forEach>
                   </div>
   </div>

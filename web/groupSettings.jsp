@@ -37,7 +37,6 @@
         <h1>Manage ${currentGroup.groupName} Settings</h1>
         <c:choose>
             <c:when test="${user != null}">
-            <input type='button' value = 'Logout' onclick="location.href='/vibe/logout'">
             <hr>
             
              <div id ='manage-group'>
@@ -48,8 +47,9 @@
                     <label>Edit Group Name:</label>
                     <input name="gname" id="gname" size="36" type="text" placeholder="${currentGroup.groupName}" required="true">
                 </div>
-                <input value="Update Group" type="submit">
+                <input value="Update Group" type="submit" class="btn btn-default">
             </form>
+                <hr>
                 
                 <form method ="post" action= "/vibe/update">  
                 <input name ="action" id ="action" value ="add_user" hidden>
@@ -58,10 +58,10 @@
                     <label>Add user (enter Email):</label>
                     <input name="email" id="email" size="36" type="text" value="" required="true">
                 </div>
-                <input id="add-submit" name="add-submit" value="Add User" type="submit">
+                <input id="add-submit" name="add-submit" value="Add User" type="submit" class="btn btn-default">
                 <br>
                </form>
-                
+                <hr>
                 
             <c:forEach items = "${groupUsers}" var = "u">
                 <div>
@@ -69,16 +69,18 @@
                         <input name ="action" value ="remove_user" hidden>
                         <input name ="userID" value ="${u.accountNumber}" hidden>
                         ${u.firstName} ${u.lastName} 
-                        <input type ="submit" value="Remove User"> 
+                        <input type ="submit" value="Remove User" class = "btn btn-default"> 
                     </form>
                 </div>
+                        <hr>
             </c:forEach>
         </div>
+                <hr>
             <div>
                 <form method="post" action ="/vibe/update">
                     <input name ="action" id ="action" value ="delete_group" hidden>
                     <input name ="gid" id ="gid" value ="${currentGroup.groupID}" hidden>
-                    <input value="DELETE GROUP" type="submit">
+                    <input value="DELETE GROUP" type="submit" class="btn btn-default">
                 </form>
                 </div>
         </c:when>
