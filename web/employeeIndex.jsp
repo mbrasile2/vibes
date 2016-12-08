@@ -30,7 +30,7 @@
             <c:choose>
             <c:when test="${employee eq null}"> 
         <div id ='login-area'>
-            <form id = "login" method="post" onclick ="./employee-login">
+            <form id = "login" method="post" action ="/vibe/employee-login">
                 <div>
                     <label>SSN:</label>
                     <input name="user" id="user" size="36" type="text" value="" required="true">
@@ -44,10 +44,14 @@
         </div>
             </c:when>
                 <c:when test="${employee ne null}">
-                    Welcome ${employee.firstName} ${employee.LastName}!
-                </c:when>
+                    Welcome ${employee.firstName} ${employee.lastName}!
                     
-                    <c:if test="employee.
+                    <c:if test="${employee.manager}">
+                        <input type="button" value="Edit employee information" onclick="location.href='/vibe/employeeSettings.jsp'">
+                    </c:if>
+                        
+                        <a href="/vibe/logout">Logout Here</a>
+                </c:when>
             </c:choose>
                     
     </body>
