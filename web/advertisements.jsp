@@ -21,15 +21,31 @@
                 
                 $('#create-ad').hide();
             }
+            function showAds(){
+                $('#view-ads').show();
+            }
+            function hideAds() {
+                
+                $('#view-ads').hide();
+            }
         </script>
     </head>
     <body>
         <h1>Vibes</h1>
         <div>
-                    <input type='button' value = 'Create Advertisement'id="Create Advertisement" onclick = 'populateForm()'>
+            <input type='button' value = 'View Advertisements'id="View Advertisements" onclick = 'showAds()'>
+        </div>
+        <div id='view-ads' hidden>
+            <h2> Advertisements </h2>
+            <c:forEach items="${messages}" var = "m">
+                
+            </c:forEach>
+        </div>
+        <div>
+                    <input type='button' value = 'Create Advertisement'id="Create-Advertisement" onclick = 'populateForm()'>
                 </div>
         <div id='create-ad' hidden>
-            <form id ='ads' method='post' action ='./update'>
+            <form id ='ads' method='post' action ='./advertisementServlet'>
                 <!-- hidden parameter for action -->
                 <input name ="action" id ="action" value ="create" hidden>
                 <div>
@@ -59,5 +75,6 @@
                 <input id="create-submit" name="create-submit" value="Create" type="submit">
             </form>
         </div>
+        
     </body>
 </html>

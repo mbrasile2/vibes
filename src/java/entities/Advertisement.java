@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -27,21 +28,21 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author kATHRYN
+ * @author Conor
  */
 @Entity
 @Table(name = "advertisement")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Advertisement.findAll", query = "SELECT a FROM Advertisement a"),
-    @NamedQuery(name = "Advertisement.findByAdvertisementID", query = "SELECT a FROM Advertisement a WHERE a.advertisementID = :advertisementID"),
-    @NamedQuery(name = "Advertisement.findByType", query = "SELECT a FROM Advertisement a WHERE a.type = :type"),
-    @NamedQuery(name = "Advertisement.findByItemName", query = "SELECT a FROM Advertisement a WHERE a.itemName = :itemName"),
-    @NamedQuery(name = "Advertisement.findByDateCreated", query = "SELECT a FROM Advertisement a WHERE a.dateCreated = :dateCreated"),
-    @NamedQuery(name = "Advertisement.findByCompany", query = "SELECT a FROM Advertisement a WHERE a.company = :company"),
-    @NamedQuery(name = "Advertisement.findByContent", query = "SELECT a FROM Advertisement a WHERE a.content = :content"),
-    @NamedQuery(name = "Advertisement.findByPrice", query = "SELECT a FROM Advertisement a WHERE a.price = :price"),
-    @NamedQuery(name = "Advertisement.findByUnitsAvailable", query = "SELECT a FROM Advertisement a WHERE a.unitsAvailable = :unitsAvailable")})
+    @NamedQuery(name = "Advertisement.findAll", query = "SELECT a FROM Advertisement a")
+    , @NamedQuery(name = "Advertisement.findByAdvertisementID", query = "SELECT a FROM Advertisement a WHERE a.advertisementID = :advertisementID")
+    , @NamedQuery(name = "Advertisement.findByType", query = "SELECT a FROM Advertisement a WHERE a.type = :type")
+    , @NamedQuery(name = "Advertisement.findByItemName", query = "SELECT a FROM Advertisement a WHERE a.itemName = :itemName")
+    , @NamedQuery(name = "Advertisement.findByDateCreated", query = "SELECT a FROM Advertisement a WHERE a.dateCreated = :dateCreated")
+    , @NamedQuery(name = "Advertisement.findByCompany", query = "SELECT a FROM Advertisement a WHERE a.company = :company")
+    , @NamedQuery(name = "Advertisement.findByContent", query = "SELECT a FROM Advertisement a WHERE a.content = :content")
+    , @NamedQuery(name = "Advertisement.findByPrice", query = "SELECT a FROM Advertisement a WHERE a.price = :price")
+    , @NamedQuery(name = "Advertisement.findByUnitsAvailable", query = "SELECT a FROM Advertisement a WHERE a.unitsAvailable = :unitsAvailable")})
 public class Advertisement implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,10 +70,11 @@ public class Advertisement implements Serializable {
     @Size(max = 50)
     @Column(name = "content")
     private String content;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
-    private long price;
+    private BigDecimal price;
     @Basic(optional = false)
     @NotNull
     @Column(name = "unitsAvailable")
@@ -82,6 +84,8 @@ public class Advertisement implements Serializable {
     private Employee employeeID;
     @OneToMany(mappedBy = "advertisementID")
     private Collection<Salesdata> salesdataCollection;
+    @OneToMany(mappedBy = "advertisementID")
+    private Collection<Items> itemsCollection;
 
     public Advertisement() {
     }
@@ -90,7 +94,7 @@ public class Advertisement implements Serializable {
         this.advertisementID = advertisementID;
     }
 
-    public Advertisement(Integer advertisementID, String itemName, String company, long price, int unitsAvailable) {
+    public Advertisement(Integer advertisementID, String itemName, String company, BigDecimal price, int unitsAvailable) {
         this.advertisementID = advertisementID;
         this.itemName = itemName;
         this.company = company;
@@ -146,11 +150,11 @@ public class Advertisement implements Serializable {
         this.content = content;
     }
 
-    public long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -177,6 +181,15 @@ public class Advertisement implements Serializable {
 
     public void setSalesdataCollection(Collection<Salesdata> salesdataCollection) {
         this.salesdataCollection = salesdataCollection;
+    }
+
+    @XmlTransient
+    public Collection<Items> getItemsCollection() {
+        return itemsCollection;
+    }
+
+    public void setItemsCollection(Collection<Items> itemsCollection) {
+        this.itemsCollection = itemsCollection;
     }
 
     @Override

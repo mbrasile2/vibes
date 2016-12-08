@@ -5,10 +5,12 @@
  */
 package servlets;
 
+import entities.Employee;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -50,18 +52,49 @@ public class advertisementServlet extends HttpServlet {
             }
             Connection conn = null;
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://localhost:33069/cse305", "root", "suckit");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "root");
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
+            Employee currentEmployee = new Employee();
+            currentEmployee = (Employee)session.getAttribute("employee");
+            int employeeID = currentEmployee.getSsn();
+            String query2 = "SELECT MAX(advertisementID) FROM advertisement;";
+            int advertisementID = 0;
+            try {
+                    ResultSet rs = stmt.executeQuery(query2);
+                    while (rs.next()) 
+                        advertisementID = rs.getInt("MAX(advertisementID)");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            advertisementID = advertisementID + 1;
+            int date = 0;
             String type = request.getParameter("type");
-            
+            String iName = request.getParameter("iname");
+            String company = request.getParameter("company");
+            String content = request.getParameter("content");
+            String priceString = request.getParameter("price");
+            String uAvailableString = request.getParameter("uavailable");
+            double price = Double.parseDouble(priceString);
+            int uAvailable = Integer.parseInt(uAvailableString);
+            String query = "INSERT INTO advertisement (advertisementID, employeeID, type, itemName, company, content, price, unitsAvailable) " +
+                    "VALUES (" + advertisementID + ", " + employeeID + ", '" + type + "', '" + iName + "', '" + company + "', '" +
+                    content + "', " + price + ", " + uAvailable + ");";
+                    try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                    
         }
             catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
     }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
