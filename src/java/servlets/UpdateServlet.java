@@ -79,6 +79,9 @@ public class UpdateServlet extends HttpServlet {
                 String state = request.getParameter("state");
                 String zip = request.getParameter("zip");
                 String phone = request.getParameter("phone");
+                int phoneNum = 0;
+                if (!phone.equals(""))
+                    phoneNum = Integer.valueOf(phone);
                 String email = request.getParameter("email");
                 String prefs = request.getParameter("prefs");
             
@@ -88,8 +91,15 @@ public class UpdateServlet extends HttpServlet {
                     +fname+ "', '" +lname+ "', '" +address+ "', '" +city+ "', '"
                     +state+ "', '" +zip+ "', '" +phone+ "', '" +email+ "', '" +prefs+
                     "', '" +password+ "');";
+                
+                String query8 = "INSERT INTO Customers (firstName, lastName, address, city, state, "
+                        + "zipcode, telephone, emailID, preferences) VALUES ('" 
+                        +fname+ "', '" +lname+ "', '" +address+ "', '" +city+ "', '"
+                        +state+ "', '" +zip+ "', " +phoneNum+ ", '" +email+ "', '" +prefs+ "');";
+                        
                 try {
                     stmt.executeUpdate(query);
+                    stmt.executeUpdate(query8);
                 } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -106,11 +116,29 @@ public class UpdateServlet extends HttpServlet {
                 } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                        
+                
+                // get the newly created customer id
+                String query9 = "SELECT customerID FROM Customers WHERE emailID = '" +email+
+                        "';";
+                
+                int custNum=0;
+                try {
+                    ResultSet rs = stmt.executeQuery(query9);
+                    while (rs.next()) 
+                        custNum = rs.getInt("customerID");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 // Now make the page
                 String query3 = "INSERT INTO Pages (ownerID, postCount, primaryPage)"
                     + " VALUES (" +accountNum+ ", 0, 'y');";
                 stmt.executeUpdate(query3);
+                
+                // Make the account relation
+                String query10 = "INSERT INTO accounts (accountnumber, customerID) VALUES (" +accountNum+
+                        ", " +custNum+ ");";
+                stmt.executeUpdate(query10);
                 
                 // acquire the pageID
                 String query4 = "SELECT * FROM Pages WHERE (ownerID = '" +accountNum+

@@ -8,7 +8,9 @@ package servlets;
 import beans.employeeBean;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
@@ -116,6 +118,66 @@ public class employeeUpdate extends HttpServlet {
                 RequestDispatcher jsp = request.getRequestDispatcher("/employeeIndex.jsp");
                 jsp.forward(request, response);            
             }
+            if (action.equals("add_cust")) {
+                String fname = request.getParameter("fname");
+                String lname = request.getParameter("lname");
+                String address = request.getParameter("address");
+                String city = request.getParameter("city");
+                String state = request.getParameter("state");
+                
+                String zip = request.getParameter("zip");
+                int phoneNum = 0;
+                String phone = request.getParameter("phone");
+                if (!phone.equals(""))
+                    phoneNum = Integer.valueOf(phone);
+                String sex = request.getParameter("sex");
+                String email = request.getParameter("email");
+                String prefs = request.getParameter("prefs");
+                
+                // make the account    
+                String query = "INSERT INTO customers (firstName, lastName, address,"
+                    + " city, state, zipcode, telephone, sex, emailID, preferences) VALUES ('" 
+                    +fname+ "', '" +lname+ "', '" +address+ "', '" +city+ "', '"
+                    +state+ "', '" +zip+ "', " +phoneNum+ ", '" +sex+ "', '" +email+ "', '" +prefs+ "');";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // get the newly created customer id
+                String query9 = "SELECT customerID FROM Customers WHERE emailID = '" +email+
+                        "';";
+                
+                int custNum=0;
+                try {
+                    ResultSet rs = stmt.executeQuery(query9);
+                    while (rs.next()) 
+                        custNum = rs.getInt("customerID");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // get the account number
+                String query2 = "SELECT AccountNumber FROM User WHERE emailaddress = '" +email+
+                        "';";
+                
+                int accountNum=0;
+                try {
+                    ResultSet rs = stmt.executeQuery(query2);
+                    while (rs.next()) 
+                        accountNum = rs.getInt("accountNumber");
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Make the account relation
+                String query10 = "INSERT INTO accounts (accountnumber, customerID) VALUES (" +accountNum+
+                        ", " +custNum+ ");";
+                stmt.executeUpdate(query10);
+                
+                response.sendRedirect("/vibe/customer");
+            }
             if (action.equals("edit_emp")) {
                 String fname = request.getParameter("fname");
                 String lname = request.getParameter("lname");
@@ -162,6 +224,54 @@ public class employeeUpdate extends HttpServlet {
                 
                 RequestDispatcher jsp = request.getRequestDispatcher("/employeeSettings.jsp");
                 jsp.forward(request, response);            
+            }
+            if (action.equals("edit_customer")) {
+                String fname = request.getParameter("fname");
+                String lname = request.getParameter("lname");
+                String address = request.getParameter("address");
+                String city = request.getParameter("city");
+                String state = request.getParameter("state");
+                String zip = request.getParameter("zip");
+                int phone = Integer.valueOf(request.getParameter("phone"));
+                //Date dob = Date.valueOf(request.getParameter("dob"));
+                String sex = request.getParameter("sex");
+                String email = request.getParameter("email");
+                String prefs = request.getParameter("preferences");
+                int id = Integer.valueOf(request.getParameter("id"));
+                
+                // get customer ID
+                // String query2 = "SELECT customerID FROM accounts WHERE AccountNumber = " +id+ ";";
+                
+                // update customer
+                String query = "UPDATE Customers SET firstName = '" +fname+ "', lastName = '"
+                        +lname+ "', address = '" +address+ "', city = '" +city+ "', state = '" 
+                        +state+ "', zipcode = '" +zip+ "', telephone = " +phone+ ", sex = '"                
+                        +sex+ "', emailID = '" +email+ "', preferences = '" +prefs+ "' WHERE customerID = "
+                        +id+ ";";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Store the session data
+                // TO DO
+                
+                response.sendRedirect("/vibe/customer");            
+            }
+            if (action.equals("delete_cust")) {
+                int id = Integer.valueOf(request.getParameter("id"));
+                
+                // make the account    
+                String query = "DELETE FROM Customers WHERE (customerID = " +id+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                response.sendRedirect("/vibe/customer");
+                return;
             }
             if (action.equals("delete_emp")) {
                 int id = Integer.valueOf(request.getParameter("id"));

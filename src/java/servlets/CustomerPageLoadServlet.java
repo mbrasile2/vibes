@@ -5,11 +5,9 @@
  */
 package servlets;
 
-import beans.advertisementBean;
-import beans.employeeBean;
 import beans.userBean;
+import beans.customerBean;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -62,6 +60,33 @@ public class CustomerPageLoadServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
+            
+            // get customer objects
+            String query8 = "SELECT * FROM customers;";
+            ArrayList<customerBean> customerList = new ArrayList<>();
+            try {
+                ResultSet rs = stmt.executeQuery(query8);
+                while (rs.next()) {
+                    customerBean c = new customerBean();
+                    c.setFirstName(rs.getString("firstName"));
+                    c.setLastName(rs.getString("lastName"));
+                    c.setSex(rs.getString("sex"));
+                    c.setCustomerID(rs.getInt("customerID"));
+                    c.setEmail(rs.getString("emailID"));
+                    c.setDob(rs.getDate("dob"));
+                    c.setAddress(rs.getString("Address"));
+                    c.setCity(rs.getString("city"));
+                    c.setState(rs.getString("state"));
+                    c.setZipcode(rs.getString("zipcode"));
+                    c.setTelephone(rs.getInt("telephone"));
+                    c.setPreferences(rs.getString("preferences"));
+                    customerList.add(c);
+                }    
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            request.setAttribute("customerList", customerList);
+            
             
             // get highest revenue generating customers
             String query2 = "SELECT firstName, lastName, SUM(s.numUnits)*price as revenue FROM salesData s " +

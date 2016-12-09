@@ -89,7 +89,11 @@ public class EmployeeLoginServlet extends HttpServlet {
                     while (rs.next()) {
                         returningEmployee.setFirstName(rs.getString("FirstName"));
                         returningEmployee.setLastName(rs.getString("LastName"));
-                        returningEmployee.setManager(rs.getBoolean("isManager"));
+                        boolean isM = rs.getBoolean("isManager");
+                        if (isM)
+                            returningEmployee.setManager(true);
+                        else
+                            returningEmployee.setManager(false);
                     }
                 
                     // add user info to the session
