@@ -41,6 +41,18 @@
         <servlet-name>CustomerPageLoadServlet</servlet-name>
         <servlet-class>servlets.CustomerPageLoadServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ConorEmployeeServlet</servlet-name>
+        <servlet-class>servlets.ConorEmployeeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>advertisementServlet</servlet-name>
+        <servlet-class>servlets.advertisementServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>suggestionServlet</servlet-name>
+        <servlet-class>servlets.suggestionServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/</url-pattern>
@@ -80,6 +92,18 @@
     <servlet-mapping>
         <servlet-name>CustomerPageLoadServlet</servlet-name>
         <url-pattern>/customer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConorEmployeeServlet</servlet-name>
+        <url-pattern>/ConorEmployeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>advertisementServlet</servlet-name>
+        <url-pattern>/advertisementServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>suggestionServlet</servlet-name>
+        <url-pattern>/suggestionServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>/</welcome-file>
