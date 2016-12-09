@@ -1,8 +1,9 @@
 <%-- 
-    Document   : items
-    Created on : Dec 8, 2016, 11:28:54 PM
+    Document   : customers
+    Created on : Dec 9, 2016, 1:30:18 AM
     Author     : kATHRYN
 --%>
+
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -15,7 +16,7 @@
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         
-        <title>Item Information</title>
+        <title>Customer Information</title>
         
          <style>
             body {
@@ -32,28 +33,31 @@
                 <c:when test="${employee ne null}">
                     <%@include file="/pages/emp-header.jsp"%>
                     <div>
-                        <h3>Item List</h3>
+                        <h3>Customers Generating Most Revenue</h3>
                         <hr>
-                        <h3>Most Active Items</h3>
-                        <hr>
-                        <c:forEach items="${hottestItems}" var="item">
-                            ${item.numSold} ${item.name}  ${item.content}  ${item.price}
+                        <c:forEach items="${custRevenue}" var="customer">
+                            ${customer.firstName} ${customer.lastName}  ${customer.revenue}
                             <hr>
                         </c:forEach>
-                        <h3>Search Items By Company</h3>
+                        <h3>Search Customers by Item Purchased</h3>
                         <hr>
-                        <form method="post" class="form-horizontal" action="/vibe/items">
+                        <form method="post" class="form-horizontal" action="/vibe/customer">
                             <fieldset>
                                 <div class="form-group">
-                                    <label for="inputComp" class="col-lg-2 control-label">Company</label>
+                                    <label for="inputItem" class="col-lg-2 control-label">Item</label>
                                         <div class="col-lg-5">
-                                            <input type="text" class="form-control" name="company" required="true">
+                                            <input type="text" class="form-control" name="item" required="true">
                                         </div>
                                 
                                 <input type="submit" class="btn btn-primary" value ="Search">
-                                </div>
-                                <c:forEach items="${itemsWanted}" var="item">
-                                    ${item.name}  ${item.content}  ${item.price}
+                                </div
+                                <c:if test="${itemWanted ne null}">
+                                    <div>
+                                        Search results for ${itemWanted}:
+                                    </div>
+                                </c:if>
+                                <c:forEach items="${customersWanted}" var="cust">
+                                    ${cust.firstName}  ${cust.lastName} 
                                     <hr>
                                 </c:forEach>
                             </fieldset>

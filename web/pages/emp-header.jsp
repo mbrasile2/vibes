@@ -29,7 +29,7 @@
            <c:if test="${employee.manager}">
                 <li><a href="/vibe/employeeSettings.jsp">Employee Info</a></li>
                 <li><a href="/vibe/sales.jsp">Sales</a></li>
-                <li><a href="/vibe/customers.jsp">Customers</a></li>
+                <li><a href="/vibe/customer">Customers</a></li>
                 <li><a href="/vibe/items">Items</a></li>
            </c:if>
         

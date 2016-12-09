@@ -7,7 +7,9 @@ package servlets;
 
 import beans.advertisementBean;
 import beans.employeeBean;
+import beans.userBean;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -27,9 +29,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author kATHRYN
  */
-public class ItemPageLoadServlet extends HttpServlet {
+public class CustomerPageLoadServlet extends HttpServlet {
 
-    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -45,7 +46,8 @@ public class ItemPageLoadServlet extends HttpServlet {
         
         HttpSession session = request.getSession();
         
-        String companyWanted = request.getParameter("company");
+        String itemWanted = request.getParameter("item");
+        request.setAttribute("itemWanted", itemWanted);
         
         try {
             try {
@@ -61,70 +63,54 @@ public class ItemPageLoadServlet extends HttpServlet {
             }
             Statement stmt = conn.createStatement();
             
-            // get hottest trending items
-            String query1 = "SELECT itemName, content, price, s.advertisementID, SUM(s.numUnits) as count FROM salesData s "
-                    +"JOIN Advertisement ON "
-                    +"advertisement.advertisementID = s.advertisementID "
-                    +"GROUP BY advertisementID ORDER BY count DESC LIMIT 5;";
-            ArrayList<advertisementBean> hottestItems = new ArrayList<>();
-            try {
-                ResultSet rs = stmt.executeQuery(query1) ;
-                while (rs.next()) {
-                    advertisementBean a = new advertisementBean();
-                    a.setContent(rs.getString("content"));
-                    a.setName(rs.getString("itemName"));
-                    a.setPrice(rs.getDouble("price"));
-                    a.setNumSold(rs.getInt("count"));
-                    hottestItems.add(a);
-                }    
-            } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            } 
-            request.setAttribute("hottestItems", hottestItems);
-            
-            // get highest revenue generating employees
-            String query2 = "SELECT firstName, lastName, itemName, employeeID, content, price, " +
-                "s.advertisementID, SUM(s.numUnits)*price as revenue FROM salesData s " +
+            // get highest revenue generating customers
+            String query2 = "SELECT firstName, lastName, SUM(s.numUnits)*price as revenue FROM salesData s " +
                 "JOIN Advertisement a ON " +
                 "a.advertisementID = s.advertisementID " +
-                "JOIN Employee ON " +
-                "employee.ssn = a.employeeID " +
-            "GROUP BY employeeID ORDER BY revenue DESC LIMIT 3;";
-             ArrayList<employeeBean> mostRevenue = new ArrayList<>();
+                "JOIN User ON " +
+                "User.AccountNumber = s.accountNum " +
+                "GROUP BY accountNumber ORDER BY revenue DESC LIMIT 3;";
+            
+            ArrayList<userBean> mostRevenue = new ArrayList<>();
             try {
-                ResultSet rs = stmt.executeQuery(query2) ;
+                ResultSet rs = stmt.executeQuery(query2);
                 while (rs.next()) {
-                    employeeBean e = new employeeBean();
-                    e.setFirstName(rs.getString("firstName"));
-                    e.setLastName(rs.getString("lastName"));
-                    e.setRevenue(rs.getDouble("revenue"));
-                    mostRevenue.add(e);
+                    userBean u = new userBean();
+                    u.setFirstName(rs.getString("firstName"));
+                    u.setLastName(rs.getString("lastName"));
+                    u.setRevenue(rs.getDouble("revenue"));
+                    mostRevenue.add(u);
                 }    
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             } 
-            request.setAttribute("mostRevenue", mostRevenue);
+            request.setAttribute("custRevenue", mostRevenue);
         
-        if (companyWanted!=null) {
-            String query = "SELECT itemName, content, price FROM advertisement " 
-                    + "WHERE company = '" + companyWanted+ "';";
-            ArrayList<advertisementBean> itemsWanted = new ArrayList<>();
+        if (itemWanted!=null) {
+            String query = "SELECT firstName, lastName FROM salesData " +
+                "JOIN User ON " +
+                "User.accountNumber = salesdata.accountNum " +
+                "JOIN Advertisement ON " +
+                "advertisement.advertisementID = salesData.advertisementID " +
+                "WHERE advertisement.itemName = '" +itemWanted+ "' " +
+                "GROUP BY advertisement.advertisementID;";
+            
+            ArrayList<userBean> customersWanted = new ArrayList<>();
             try {
                 ResultSet rs = stmt.executeQuery(query) ;
                 while (rs.next()) {
-                    advertisementBean a = new advertisementBean();
-                    a.setContent(rs.getString("content"));
-                    a.setName(rs.getString("itemName"));
-                    a.setPrice(rs.getDouble("price"));
-                    itemsWanted.add(a);
+                    userBean u = new userBean();
+                    u.setFirstName(rs.getString("firstName"));
+                    u.setLastName(rs.getString("lastName"));
+                    customersWanted.add(u);
                 }    
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }    
-            request.setAttribute("itemsWanted", itemsWanted);
+            request.setAttribute("customersWanted", customersWanted);
         }
         
-        RequestDispatcher jsp = request.getRequestDispatcher("./items.jsp");
+        RequestDispatcher jsp = request.getRequestDispatcher("./customers.jsp");
         jsp.forward(request,response);
             
     }catch (SQLException ex) {

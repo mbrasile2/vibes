@@ -13,6 +13,15 @@ public class userBean {
     private String firstName;
     private String lastName;
     private int accountNumber;
+    private double revenue;
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
+    }
 
     public String getFirstName() {
         return firstName;
