@@ -35,7 +35,8 @@
                 <c:when test="${employee ne null}">
                     <%@include file="/pages/emp-header.jsp"%>
                     <div>
-                        Welcome ${employee.firstName} ${employee.lastName}! 
+                        Welcome ${employee.firstName} ${employee.lastName}!
+                        
                     </div>                 
                     <hr>                       
                 </c:when>

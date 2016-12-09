@@ -21,7 +21,7 @@
         <title>Vibe Employee Portal</title>
     </head>
     <body>
-        <h1>Vibe< Employee Portal/h1>
+        <h1>Vibe Employee Portal</h1>
         <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">

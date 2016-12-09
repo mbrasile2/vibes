@@ -14,6 +14,15 @@ import java.util.Date;
 public class employeeBean {
     
     private String password;
+    private double revenue;
+
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
+    }
     private boolean manager;
 
     public String getPassword() {
