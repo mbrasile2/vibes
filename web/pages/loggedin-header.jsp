@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -29,7 +30,7 @@
         <li><a href="/vibe/groups.jsp">Groups</a></li>
         <li><a href="/vibe/messages.jsp">Messages</a></li>
         <li><a href="/vibe/page/${pageID}">My Wall</a></li>
-        <li><a hred="/vibe/buy">Simulate Sale</a></li>
+        <li><a href="/vibe/buy">Simulate Sale</a></li>
         <li class="dropdown">
       </ul>
       <ul class="nav navbar-nav navbar-right">

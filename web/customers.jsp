@@ -33,6 +33,7 @@
                 <c:when test="${employee ne null}">
                     <%@include file="/pages/emp-header.jsp"%>
                     <div>
+                        <c:if test="${employee.manager}">
                         <h3>Customers Generating Most Revenue</h3>
                         <hr>
                         <c:forEach items="${custRevenue}" var="customer">
@@ -61,16 +62,12 @@
                                     <hr>
                                 </c:forEach>
                             </fieldset>
-                        </form>
-                        
-                        <h3>Employees Generating Most Revenue</h3>
-                        <hr>
-                        <c:forEach items="${mostRevenue}" var="emp">
-                            ${emp.firstName} ${emp.lastName}  ${emp.revenue}
-                            <hr>
-                        </c:forEach>
-                    </div>                 
-                    <hr>                       
+                        </form>  
+                        </c:if> 
+                        <c:if test="employee.manager ne true">
+                            
+                        </c:if>
+                    </div>                                   
                 </c:when>
             </c:choose>
                     

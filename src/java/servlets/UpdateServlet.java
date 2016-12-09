@@ -148,6 +148,19 @@ public class UpdateServlet extends HttpServlet {
                 response.sendRedirect("/vibe/index.jsp");                
 
             }
+            if (action.equals("buy_item")) {
+                int ID = Integer.valueOf(request.getParameter("id"));
+                int acctNum = ((User)session.getAttribute("user")).getAccountNumber();
+                int numUnits = Integer.valueOf(request.getParameter("num"));
+                
+                
+                  // add comment to database   
+                String query = "INSERT INTO salesData (advertisementID, accountNum, numUnits) VALUES (" +ID+
+                        ", " +acctNum+ ", " +numUnits+ ");";
+                
+                stmt.executeUpdate(query);
+                response.sendRedirect("/vibe/");                
+            }
             if (action.equals("post")) {
                 String post_data = request.getParameter("post_data");
                 int acctNum = ((User)session.getAttribute("user")).getAccountNumber();

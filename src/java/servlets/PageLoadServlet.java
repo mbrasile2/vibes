@@ -52,7 +52,7 @@ public class PageLoadServlet extends HttpServlet {
         String[] urlParts = url.split("/");
         int ID = -1;
         boolean buy = false;
-        if (urlParts[urlParts.length-1].equals("buySimulation")) 
+        if (urlParts[urlParts.length-1].equals("buy")) 
             buy = true;
         else 
             ID= (int)Long.parseLong(urlParts[urlParts.length-1]);
@@ -92,6 +92,7 @@ public class PageLoadServlet extends HttpServlet {
                         a.setCompany(rs.getString("company"));
                         a.setName(rs.getString("itemName"));
                         a.setPrice(rs.getDouble("price"));
+                        a.setType(rs.getString("type"));
                         adverts.add(a);
                        
                     }
