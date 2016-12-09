@@ -55,7 +55,7 @@ public class employeeUpdate extends HttpServlet {
         String action = request.getParameter("action");
         
         // If the user isn't logged in, direct them to login page
-        if ((session.getAttribute("user") == null)) {
+        if ((session.getAttribute("employee") == null)) {
             response.sendRedirect("/vibe/");
         }
 
