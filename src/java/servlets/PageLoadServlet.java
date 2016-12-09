@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.RequestDispatcher;
 
+import beans.advertisementBean;
 import beans.postBean;
 import beans.postLikeBean;
 import java.util.ArrayList;
@@ -49,7 +50,13 @@ public class PageLoadServlet extends HttpServlet {
         
         String url = request.getRequestURL().toString();
         String[] urlParts = url.split("/");
-        int ID = (int)Long.parseLong(urlParts[urlParts.length-1]);
+        int ID = -1;
+        boolean buy = false;
+        if (urlParts[urlParts.length-1].equals("buySimulation")) 
+            buy = true;
+        else 
+            ID= (int)Long.parseLong(urlParts[urlParts.length-1]);
+        
         
         groupBean g = new groupBean();
         
@@ -71,6 +78,27 @@ public class PageLoadServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
+            
+            // load advertisement info
+            if (buy) {
+                query = "SELECT * FROM advertisement;";
+                ArrayList<advertisementBean> adverts = new ArrayList<>();
+                try {
+                ResultSet rs = stmt.executeQuery(query);
+                    while (rs.next()) {
+                        advertisementBean a = new advertisementBean();
+                        a.setContent(rs.getString("content"));
+                        a.setAdID(rs.getInt("advertisementID"));
+                        a.setDate(rs.getDate("dateCreated"));
+                        a.setEmpID(rs.getInt("employeeID"));
+                        a.setCompany(rs.getString("company"));
+                       
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else {
             query = "SELECT * FROM Posts WHERE (Page = " +ID+ ") ORDER BY postdate DESC;";
             ArrayList<postBean> currentPosts = new ArrayList<>();
             ArrayList<commentBean> commentList = new ArrayList<>();
@@ -232,6 +260,7 @@ public class PageLoadServlet extends HttpServlet {
                 RequestDispatcher jsp;
                 jsp = request.getRequestDispatcher("/page.jsp");
                 jsp.forward(request,response);
+            }
             }
         }catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
