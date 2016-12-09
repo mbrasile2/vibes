@@ -32,64 +32,68 @@
             </c:when>
                 <c:when test="${employee ne null}">
                     <%@include file="/pages/emp-header.jsp"%>
-                    <span style="height: 100%; width:100%;">
-                        <div>
-                            <h3>View Sales by Month</h3>
-                            <form method="post" action="/vibe/sales" class="form-horizontal">
-                                <select name="select_dates">
-                                  <c:forEach items="${dates}" var="date">
-                                      <option id="date" name="date" value="${date}">${date}</option>
-                                  </c:forEach>
-                                </select>
-                                <input type="submit" value ="Search">
-                            </form>
-                        </div>
-                        <hr>
-                        <div>
-                            <h3>View Transactions by Item Name</h3>
-                            <form method="post" action="/vibe/sales" class="form-horizontal">
-                                <select name="select_names">
-                                  <c:forEach items="${item_names}" var="i">
-                                      <option id="item_name" name="item_name" value="${i}">${i}</option>
-                                  </c:forEach>
-                                </select>
-                                <input type="submit" value ="Search">
-                            </form>
-                        </div>
-                        <hr>
-                        <div>
-                            <h3>View Transactions by User Name</h3>
-                            <form method="post" action="/vibe/sales" class="form-horizontal">
-                                <select name="select_users">
-                                  <c:forEach items="${user_names}" var="u">
-                                      <option id="user_name" name="user_name" value="${u}">${u}</option>
-                                  </c:forEach>
-                                </select>
-                                <input type="submit" value ="Search">
-                            </form>
-                        </div>
-                    </span>
-                   <hr> 
-                    <table style="width:100%;text-align:center">
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th> 
-                            <th>Advertisement ID</th>
-                            <th>Units Sold</th>
-                            <th>Customer ID</th>
-                        </tr>
-                        <c:if test="${sales ne null}"> 
-                            <c:forEach items="${sales}" var = "t">
-                                    <tr>
-                                        <th>${t.transactionID}</th>
-                                        <th>${t.date}</th> 
-                                        <th>${t.advertisementID}</th>
-                                        <th>${t.numUnits}</th>
-                                        <th>${t.accountNum}</th>
-                                    </tr>
-                            </c:forEach>
-                        </c:if>
-                    </table>
+                    <div>
+                        <span style="height: 100%; width:100%;">
+                            <div>
+                                <h3>View Sales by Month</h3>
+                                <form method="post" action="/vibe/sales" class="form-horizontal">
+                                    <select name="select_dates">
+                                      <c:forEach items="${dates}" var="date">
+                                          <option id="date" name="date" value="${date}">${date}</option>
+                                      </c:forEach>
+                                    </select>
+                                    <input type="submit" value ="Search">
+                                </form>
+                            </div>
+                            <hr>
+                            <div>
+                                <h3>View Transactions by Item Name</h3>
+                                <form method="post" action="/vibe/sales" class="form-horizontal">
+                                    <select name="select_names">
+                                      <c:forEach items="${item_names}" var="i">
+                                          <option id="item_name" name="item_name" value="${i}">${i}</option>
+                                      </c:forEach>
+                                    </select>
+                                    <input type="submit" value ="Search">
+                                </form>
+                            </div>
+                            <hr>
+                            <div>
+                                <h3>View Transactions by User Name</h3>
+                                <form method="post" action="/vibe/sales" class="form-horizontal">
+                                    <select name="select_users">
+                                      <c:forEach items="${user_names}" var="u">
+                                          <option id="user_name" name="user_name" value="${u}">${u}</option>
+                                      </c:forEach>
+                                    </select>
+                                    <input type="submit" value ="Search">
+                                </form>
+                            </div>
+                        </span>
+                       <hr> 
+                        <table style="width:100%;text-align:center">
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th> 
+                                <th>Advertisement ID</th>
+                                <th>Units Sold</th>
+                                <th>Customer ID</th>
+                            </tr>
+                            <c:if test="${sales ne null}"> 
+                                <c:forEach items="${sales}" var = "t">
+                                        <tr>
+                                            <th>${t.transactionID}</th>
+                                            <th>${t.date}</th> 
+                                            <th>${t.advertisementID}</th>
+                                            <th>${t.numUnits}</th>
+                                            <th>${t.accountNum}</th>
+                                        </tr>
+                                </c:forEach>
+                            </c:if>
+                        </table>
+                    </div>
+                    <hr>
+                    <h3>hello</h3>
                     
                     </c:when>
             </c:choose>
