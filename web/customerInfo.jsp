@@ -35,16 +35,25 @@
         <h2>Customer Item Suggestion List<h2/>
             
         <c:choose>
-        <c:when test="${user = null}">
+        <c:when test="${suggestions == null}">
          <div id ='suggestion-area'>
-             <form id = "suggestion" method="post" onclick ="./suggestionServlet">
+             <form id = 'suggestion' method='post' action ='./suggestionServlet'>
                  <div>
-                    <label>Customer Email::</label>
+                    <label>Customer Email:</label>
                     <input name="customer" id="customer" size="36" type="text" value="" required="true">
                 </div>
                  <input id="suggestion-submit" name="suggestion-submit" value="Find" type="submit">
                  </form>
              <div/>
         </c:when>
+        <c:otherwise>
+            <c:forEach items="${suggestions}" var = "s">
+                <hr>
+                <br>
+                <br> Item: ${s} <br>
+                <br>
+            </c:forEach>
+        </c:otherwise>
+                </c:choose>
     </body>
 </html>
