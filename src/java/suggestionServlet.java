@@ -42,7 +42,63 @@ public class suggestionServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        try {
+        String action = request.getParameter("action");
+       if(action.equals("groupFind")){
+           try{ try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Connection conn = null;
+            try {
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "root");
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Statement stmt = conn.createStatement();
+            String custEmail = request.getParameter("customerE");
+            String custQuery = "SELECT AccountNumber FROM user WHERE EmailAddress = '" + custEmail + "';";
+            int custAccountNum = 0;
+            try {
+                    ResultSet rs = stmt.executeQuery(custQuery);
+                    while (rs.next()) {
+                        custAccountNum = rs.getInt("AccountNumber");}
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            String groupNumQuery = "SELECT GroupID FROM groupMembership WHERE UserID = " + custAccountNum + ";";
+            ArrayList<Integer> groupNums = new ArrayList<Integer>();
+            try {
+                    ResultSet rs = stmt.executeQuery(groupNumQuery);
+                    while (rs.next()){ 
+                        groupNums.add(rs.getInt("GroupID"));}
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            String allGroups = "";
+            ArrayList<String> finalGroupQueryList = new ArrayList<String>();
+            
+            for (int i = 0; i < groupNums.size(); i++){
+                String finalGroupQuery = "SELECT GroupName FROM fbgroup WHERE GroupID = " + groupNums.get(i) + ";";
+                finalGroupQueryList.add(finalGroupQuery);
+            }
+             
+                 for (int i = 0; i < finalGroupQueryList.size(); i++){
+                     try {
+                    ResultSet rs = stmt.executeQuery(finalGroupQueryList.get(i));
+                    while (rs.next()) {
+                        allGroups = allGroups + rs.getString("GroupName");}
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }}
+             ArrayList<String> allG = new ArrayList<String>();
+             allG.add(allGroups);
+             session.setAttribute("foundGroups", allG);}
+           catch (SQLException ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+       }
+       else{ try {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
             } catch (ClassNotFoundException ex) {
@@ -91,6 +147,7 @@ public class suggestionServlet extends HttpServlet {
             for (int i = 0; i < adNumbers.size(); i++){
                 otherAccountsQuery.add("SELECT accountNum FROM salesdata WHERE advertisementID = " + adNumbers.get(i) + ";");
             }
+            
             ArrayList<Integer> otherAccountNum = new ArrayList<Integer>();
             int otherAccounts;
             for (int i = 0; i < otherAccountsQuery.size(); i++){
@@ -172,7 +229,7 @@ public class suggestionServlet extends HttpServlet {
         }
             catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }}
         
         RequestDispatcher jsp = request.getRequestDispatcher("./customerInfo.jsp");
         jsp.forward(request, response);

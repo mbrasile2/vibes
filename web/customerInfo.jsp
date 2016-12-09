@@ -32,6 +32,39 @@
                 <br>
                 </c:forEach>
         </div>
+        <h2>Customer's Groups</h2>
+        <c:choose>
+        <c:when test="${foundGroups == null}">
+         <div id ='group-finder'>
+             <form id = 'groupFinder' method='post' action ='./suggestionServlet'>
+                 <input name ="action" id ="action" value ="groupFind" hidden>
+                 <div>
+                    <label>Customer Email:</label>
+                    <input name="customerE" id="customerE" size="36" type="text" value="" required="true">
+                </div>
+                 <input id="finder-submit" name="finder-submit" value="Find" type="submit">
+                 </form>
+             <div/>
+        </c:when>
+        <c:otherwise>
+            <c:forEach items="${foundGroups}" var = "f">
+                <hr>
+                <br>
+                <br> Groups: ${f} <br>
+                <br>
+            </c:forEach>
+                <div id ='group-finder2'>
+             <form id = 'groupFinder2' method='post' action ='./suggestionServlet'>
+                 <input name ="action" id ="action" value ="groupFind" hidden>
+                 <div>
+                    <label>Another Customer's Email:</label>
+                    <input name="customerE" id="customerE" size="36" type="text" value="" required="true">
+                </div>
+                 <input id="finder-submit" name="finder-submit" value="Find" type="submit">
+                 </form>
+             <div/>
+        </c:otherwise>
+                </c:choose>
         <h2>Customer Item Suggestion List<h2/>
             
         <c:choose>
@@ -53,6 +86,15 @@
                 <br> Item: ${s} <br>
                 <br>
             </c:forEach>
+                <div id ='suggestion-area2'>
+             <form id = 'suggestion2' method='post' action ='./suggestionServlet'>
+                 <div>
+                    <label>Another Customer's Email:</label>
+                    <input name="customer" id="customer" size="36" type="text" value="" required="true">
+                </div>
+                 <input id="suggestion-submit" name="suggestion-submit" value="Find" type="submit">
+                 </form>
+             <div/>
         </c:otherwise>
                 </c:choose>
     </body>
