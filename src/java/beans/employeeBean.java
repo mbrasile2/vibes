@@ -32,14 +32,14 @@ public class employeeBean {
         this.manager = isManager;
     }
     
-    private int ID;
+    private int empID;
 
-    public int getID() {
-        return ID;
+    public int getEmpID() {
+        return empID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setEmpID(int ID) {
+        this.empID = ID;
     }
 
     public String getLastName() {
@@ -106,11 +106,11 @@ public class employeeBean {
         this.startDate = startDate;
     }
 
-    public char getPhoneNum() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(char phoneNum) {
+    public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
     private String lastName;
@@ -121,6 +121,6 @@ public class employeeBean {
     private String state;
     private double pay;
     private Date startDate;
-    private char phoneNum;
+    private String phoneNum;
           
 }

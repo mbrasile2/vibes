@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.employeeBean;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -113,6 +115,79 @@ public class employeeUpdate extends HttpServlet {
                 
                 RequestDispatcher jsp = request.getRequestDispatcher("/employeeIndex.jsp");
                 jsp.forward(request, response);            
+            }
+            if (action.equals("edit_emp")) {
+                String fname = request.getParameter("fname");
+                String lname = request.getParameter("lname");
+                String address = request.getParameter("address");
+                String city = request.getParameter("city");
+                String state = request.getParameter("state");
+                String zip = request.getParameter("zip");
+                String phone = request.getParameter("phone");
+                String rate = request.getParameter("rate");
+                double hourlyRate = 0;
+                if (!rate.equals(""))
+                    hourlyRate = Double.valueOf(rate);
+                int SSN = Integer.valueOf(request.getParameter("id"));
+                               
+                // must be in 00/00/0000 form
+                String startDateString = (request.getParameter("startDate"));
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                // for debugging empty for now and NOT IN QUERY STRING
+                /*Date date=null;
+                try {
+                    date = df.parse(startDateString);
+                }catch(ParseException e) {
+                    e.printStackTrace();
+                }*/
+                
+                //boolean isManager = Boolean.valueOf(request.getParameter("isManager"));
+            
+                // for debugging, delete later
+                boolean isManager = false;
+                
+                // make the account    
+                String query = "UPDATE Employee SET firstName = '" +fname+ "', lastName = '"
+                        +lname+ "', address = '" +address+ "', city = '" +city+ "', state = '" 
+                        +state+ "', zipcode = '" +zip+ "', telephone = '" +phone+ "', hourlyRate = "
+                        +hourlyRate+ ", isManager = " +isManager+ " WHERE SSN = " +SSN+ ";";                
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Store the session data
+                // TO DO
+                
+                RequestDispatcher jsp = request.getRequestDispatcher("/employeeSettings.jsp");
+                jsp.forward(request, response);            
+            }
+            if (action.equals("delete_emp")) {
+                int id = Integer.valueOf(request.getParameter("id"));
+                
+                // make the account    
+                String query = "DELETE FROM Employee WHERE (ssn = " +id+ ");";
+                try {
+                    stmt.executeUpdate(query);
+                } catch (SQLException ex) {
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+      
+                // Remove from the session data
+                ArrayList<employeeBean> employees = (ArrayList<employeeBean>)session.getAttribute("employeeList");
+                employeeBean toBeDeleted = null;
+                for (employeeBean e : employees) {
+                    if (e.getEmpID() == id) {
+                        toBeDeleted = e;
+                        break;
+                    }
+                }
+                employees.remove(toBeDeleted);
+                session.setAttribute("employeeList", employees);
+        
+                response.sendRedirect("/vibe/employeeSettings.jsp");
+                return;
             }
         }catch (SQLException ex) {
             Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);

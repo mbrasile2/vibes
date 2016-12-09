@@ -6,12 +6,7 @@
 package servlets;
 
 import beans.employeeBean;
-import beans.groupBean;
-import beans.message;
-import entities.Employee;
-import entities.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -101,7 +96,34 @@ public class EmployeeLoginServlet extends HttpServlet {
                     session.setAttribute("employee", returningEmployee);
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }            
+                }          
+                
+                if (returningEmployee.isManager()) {
+                    String query2 = "SELECT * FROM Employee;";  
+                    ArrayList<employeeBean>employeeList = new ArrayList<>();
+                    try {
+                        ResultSet rs = stmt.executeQuery(query2) ;
+                        while (rs.next()) {
+                            employeeBean e = new employeeBean();
+                            e.setFirstName(rs.getString("FirstName"));
+                            e.setLastName(rs.getString("LastName"));
+                            e.setManager(rs.getBoolean("isManager"));
+                            e.setAddress(rs.getString("Address"));
+                            e.setZipcode(rs.getString("zipcode"));
+                            e.setCity(rs.getString("city"));
+                            e.setState(rs.getString("state"));
+                            e.setPay(rs.getDouble("hourlyRate"));
+                            e.setStartDate(rs.getDate("startDate"));
+                            e.setPhoneNum(rs.getString("telephone"));
+                            e.setEmpID(rs.getInt("SSN"));
+                            employeeList.add(e);
+                        }
+                } catch (SQLException ex) {
+                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }      
+                     // add user info to the session
+                    session.setAttribute("employeeList", employeeList);
+                }
             }
         }catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);

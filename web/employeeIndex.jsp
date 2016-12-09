@@ -11,46 +11,33 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         
         <title>Vibe Employee Login</title>
-        
-        <script>
-            function populateForm() {
-                $('#login-area').hide();
-                $('#new-user').show();
+        <style>
+            body {
+                margin-left: 10%;
+                margin-right: 10%;
             }
-        </script>
+            
+        </style>
+        
     </head>
     <body>
-        <h1>Vibe</h1>
-        
-            <hr>
+           
             <c:choose>
             <c:when test="${employee eq null}"> 
-        <div id ='login-area'>
-            <form id = "login" method="post" action ="/vibe/employee-login">
-                <div>
-                    <label>SSN:</label>
-                    <input name="user" id="user" size="36" type="text" value="" required="true">
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input name="password" id="password" size="36" type="text" value="" required="true">
-                </div>
-                <input id="login-submit" name="login-submit" value="Login" type="submit">
-            </form>
-        </div>
+                    <%@include file="/pages/emp-anon-header.jsp"%>
             </c:when>
                 <c:when test="${employee ne null}">
-                    Welcome ${employee.firstName} ${employee.lastName}!
-                    
-                    <c:if test="${employee.manager}">
-                        <input type="button" value="Edit employee information" onclick="location.href='/vibe/employeeSettings.jsp'">
-                    </c:if>
-                        
-                        <a href="/vibe/logout">Logout Here</a>
+                    <%@include file="/pages/emp-header.jsp"%>
+                    <div>
+                        Welcome ${employee.firstName} ${employee.lastName}! 
+                    </div>                 
+                    <hr>                       
                 </c:when>
             </c:choose>
                     
