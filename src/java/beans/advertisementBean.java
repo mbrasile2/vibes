@@ -5,6 +5,8 @@
  */
 package beans;
 
+import java.util.Date;
+
 
 
 /**
@@ -17,11 +19,22 @@ public int advertisementId;
 public int employeeId;
 public String type;
 public String itemName;
-public String date;
+public Date date;
 public String company;
 public String content;
 public double price;
 public int unitsAvailable;
+public advertisementBean(int aId, int eId, String ty, String it, Date da, String com, String con, double p, int u){
+    advertisementId = aId;
+    employeeId = eId;
+    type = ty;
+    itemName = it;
+    date = da;
+    company = com;
+    content = con;
+    price = p;
+    unitsAvailable = u;
+}
 public void setAdvertisementId(int id){
     advertisementId = id;
 }
@@ -34,7 +47,7 @@ public void setType(String t){
 public void setItemName(String i){
     itemName = i;
 }
-public void setDate(String d){
+public void setDate(Date d){
     date = d;
 }
 public void setCompany(String c){
@@ -58,5 +71,22 @@ public int getEmployeeId(){
 public String getType(){
     return type;
 }
-   
+public String getItemName() {
+    return itemName;
+}
+public Date getDate() {
+    return date;
+}
+public String getCompany() {
+    return company;
+}
+public String getContent() {
+    return content;
+}
+public double getPrice() {
+    return price;
+}
+public int getUnitsAvailable(){
+    return unitsAvailable;
+}
 }

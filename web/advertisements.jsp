@@ -37,8 +37,20 @@
         </div>
         <div id='view-ads' hidden>
             <h2> Advertisements </h2>
-            <c:forEach items="${messages}" var = "m">
-                
+            <c:forEach items="${allAds}" var = "a">
+                <hr>
+            ${a.itemName} :
+            <br>
+           Advertisement ID: ${a.advertisementId}
+           <br>Employee ID of who added: ${a.employeeId}<br>
+           <br>Type: ${a.type}<br>
+           <br>Date posted: ${a.date}<br>
+           <br>Company: ${a.company}<br>
+           <br>Description: ${a.content}<br>
+           <br>Price: ${a.price}<br>  
+           <br>Units Available: ${a.unitsAvailable}<br>
+           
+            <br>
             </c:forEach>
         </div>
         <div>

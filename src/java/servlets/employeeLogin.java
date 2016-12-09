@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import beans.advertisementBean;
 import beans.message;
 import entities.Employee;
 import entities.Posts;
@@ -96,63 +97,23 @@ public class employeeLogin extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(employeeLogin.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                ArrayList<advertisementBean> ads = new ArrayList<advertisementBean>();
+                String adQuery = "SELECT * FROM advertisement;";
+                try {
+                    ResultSet rs = stmt.executeQuery(adQuery) ;
+                    while (rs.next()) {
+                        ads.add(new advertisementBean(rs.getInt("advertisementID"), rs.getInt("employeeID"), rs.getString("type"), 
+                        rs.getString("itemName"), rs.getDate("dateCreated"), rs.getString("company"), rs.getString("content"), rs.getDouble("price"), rs.getInt("unitsAvailable")));
+                        
+                    }
                 
-              //  String query2 = "SELECT * FROM Pages WHERE (ownerID = '" +returningUser.getAccountNumber()+
-                //        "' AND primarypage = 'n');";
-              // String query3 = "SELECT * FROM Pages WHERE (ownerID = '" +returningUser.getAccountNumber()+
-                //        "' AND primarypage = 'y');";
-                
-               // ArrayList<Integer> groupPages = new ArrayList<>();
-               // int mainPage = 0;
-                
-                //try {
-                  //  ResultSet rs = stmt.executeQuery(query2) ;
-                    //while (rs.next()) {
-                      //  groupPages.add(rs.getInt("pageID"));
-                   // }
-                   // ResultSet rs2 = stmt.executeQuery(query3);
-                   // while (rs2.next()) {
-                     //   mainPage = rs2.getInt("pageID");
-                   // }
-                
-                     //add user info to the session
-                   // session.setAttribute("pageID", mainPage);
-                    //session.setAttribute("groupIDs", groupPages);
-               // } catch (SQLException ex) {
-                 //   Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-               // }
-                
-               // query = "SELECT * FROM Posts WHERE (Author = " +returningUser.getAccountNumber()+
-                 //       ") ORDER BY postdate DESC;";
-                
-                //ArrayList<Posts> postList = new ArrayList<>();
-               
-             //   try {
-               //     ResultSet rs = stmt.executeQuery(query) ;
-                 //   while (rs.next()) {
-                   //     Posts p = new Posts();
-                     //   p.setPostId(rs.getInt("PostID"));
-                       // p.setPostDate(rs.getDate("PostDate"));
-                       // p.setContent(rs.getString("content"));
-                       // postList.add(p);
-                   // }    
-                
-                //session.setAttribute("postlist", postList);
-                
-            //} catch (SQLException ex) {
-              //  Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            //}  
-                
-             //get messages
-           //  query = "SELECT * FROM Message WHERE (Receiver = " +returningUser.getAccountNumber()+
-             //           ") ORDER BY messagedate DESC;";
-                
-           // ArrayList<message> messageList = new ArrayList<>();
-               
-            
-            
-                
+                    // add user info to the session
+                    session.setAttribute("allAds", ads);
+                } catch (SQLException ex) {
+                    Logger.getLogger(employeeLogin.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            
         } 
 catch (SQLException ex) {
             Logger.getLogger(employeeLogin.class.getName()).log(Level.SEVERE, null, ex);
