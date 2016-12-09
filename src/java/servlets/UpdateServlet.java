@@ -67,7 +67,7 @@ public class UpdateServlet extends HttpServlet {
             }
             Connection conn = null;
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://localhost:33069/cse305", "root", "suckit");
+                conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "root");
             } catch (SQLException ex) {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }

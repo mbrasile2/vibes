@@ -49,7 +49,15 @@
            <br>Description: ${a.content}<br>
            <br>Price: ${a.price}<br>  
            <br>Units Available: ${a.unitsAvailable}<br>
-           
+           <br>
+           <form method='deletion' action ='./advertisementServlet'>
+                <!-- hidden parameter for action -->
+                <input name ="action" id ="action" value ="delete_ad" hidden>
+                <input name ="aid" id ="action" value ="${a.advertisementId}" hidden>
+                
+                <input value="Delete Advertisement" type="submit">
+            </form>
+           <br>
             <br>
             </c:forEach>
         </div>
