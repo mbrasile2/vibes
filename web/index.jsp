@@ -31,6 +31,7 @@
     </head>
     <body>
         <c:choose>
+            
             <c:when test="${user != null}"> 
                 <%@include file="/pages/loggedin-header.jsp"%>
                 <div>

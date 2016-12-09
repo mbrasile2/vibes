@@ -14,7 +14,7 @@ import java.util.Date;
 public class employeeBean {
     
     private String password;
-    private boolean isEmployee;
+    private boolean manager;
 
     public String getPassword() {
         return password;
@@ -24,12 +24,12 @@ public class employeeBean {
         this.password = password;
     }
 
-    public boolean isIsEmployee() {
-        return isEmployee;
+    public boolean isManager() {
+        return manager;
     }
 
-    public void setIsEmployee(boolean isEmployee) {
-        this.isEmployee = isEmployee;
+    public void setManager(boolean isManager) {
+        this.manager = isManager;
     }
     
     private int ID;

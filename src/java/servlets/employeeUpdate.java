@@ -5,10 +5,8 @@
  */
 package servlets;
 
-import beans.employeeBean;
 import beans.groupBean;
 import beans.message;
-import entities.Employee;
 import entities.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,7 +15,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author kATHRYN
  */
-public class EmployeeLoginServlet extends HttpServlet {
+public class employeeUpdate extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,16 +48,17 @@ public class EmployeeLoginServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        // Get info from form
-        int user = Integer.valueOf(request.getParameter("user"));
-        String password = request.getParameter("password");
-        
-        /* get session object */
+        // Get info from session
         HttpSession session = request.getSession();
         
-        String pw = new String();
-        String query;
-            
+        // Get info from form
+        String action = request.getParameter("action");
+        
+        // If the user isn't logged in, direct them to login page
+        if ((session.getAttribute("user") == null)) {
+            response.sendRedirect("/vibe/");
+        }
+
         try {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -69,46 +72,59 @@ public class EmployeeLoginServlet extends HttpServlet {
                 Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
             Statement stmt = conn.createStatement();
-            query = "SELECT SSN, password FROM Employee WHERE (SSN = " +user+ 
-                    " AND password = '" +password+ "');";
-            try {
-                ResultSet rs = stmt.executeQuery(query) ;
-                while (rs.next()) {
-                    pw = rs.getString("password");
-                }    
-            } catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }     
             
-            if (pw != null && pw.equals(password)) {
-            // success, the username and password checks out. Grab 
-            // all information, and store it in the session.
-            
-                //Create and populate User bean
-                employeeBean returningEmployee = new employeeBean();
+            if (action.equals("add_employee")) {
+                String fname = request.getParameter("fname");
+                String lname = request.getParameter("lname");
+                String address = request.getParameter("address");
+                String city = request.getParameter("city");
+                String state = request.getParameter("state");
+                String zip = request.getParameter("zip");
+                String phone = request.getParameter("phone");
+                String rate = request.getParameter("rate");
+                double hourlyRate = 0;
+                if (!rate.equals(""))
+                    hourlyRate = Double.valueOf(rate);
+                int SSN = Integer.valueOf(request.getParameter("SSN"));
+                String password = String.valueOf(SSN);
                 
-                String query1 = "SELECT * FROM Employee WHERE (SSN = " +user+ 
-                        " AND password = '" +password+ "');";         
+                // must be in 00/00/0000 form
+                String startDateString = (request.getParameter("startDate"));
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                // for debugging empty for now and NOT IN QUERY STRING
+                /*Date date=null;
                 try {
-                    ResultSet rs = stmt.executeQuery(query1) ;
-                    while (rs.next()) {
-                        returningEmployee.setFirstName(rs.getString("FirstName"));
-                        returningEmployee.setLastName(rs.getString("LastName"));
-                        returningEmployee.setManager(rs.getBoolean("isManager"));
-                    }
+                    date = df.parse(startDateString);
+                }catch(ParseException e) {
+                    e.printStackTrace();
+                }*/
                 
-                    // add user info to the session
-                    session.setAttribute("employee", returningEmployee);
+                //boolean isManager = Boolean.valueOf(request.getParameter("isManager"));
+            
+                // for debugging, delete later
+                boolean isManager = false;
+                
+                // make the account    
+                String query = "INSERT INTO Employee (firstName, lastName, address,"
+                    + " city, state, zipcode, telephone, hourlyRate, password, isManager, SSN) VALUES ('" 
+                    +fname+ "', '" +lname+ "', '" +address+ "', '" +city+ "', '"
+                    +state+ "', '" +zip+ "', '" +phone+ "'," +hourlyRate+ 
+                    ", '" +password+ "', " +isManager+ ", " +SSN+ ");";
+                try {
+                    stmt.executeUpdate(query);
                 } catch (SQLException ex) {
-                    Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }            
+                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                // Store the session data
+                // TO DO
+                
+                RequestDispatcher jsp = request.getRequestDispatcher("/employeeIndex.jsp");
+                jsp.forward(request, response);            
             }
         }catch (SQLException ex) {
-                Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        RequestDispatcher jsp = request.getRequestDispatcher("/employeeIndex.jsp");
-        jsp.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
