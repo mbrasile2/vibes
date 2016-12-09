@@ -70,6 +70,10 @@
         <url-pattern>/employeeUpdate</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>PageLoadServlet</servlet-name>
+        <url-pattern>/buy</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ItemPageLoadServlet</servlet-name>
         <url-pattern>/items</url-pattern>
     </servlet-mapping>

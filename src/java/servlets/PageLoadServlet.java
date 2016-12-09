@@ -89,14 +89,20 @@ public class PageLoadServlet extends HttpServlet {
                         advertisementBean a = new advertisementBean();
                         a.setContent(rs.getString("content"));
                         a.setAdID(rs.getInt("advertisementID"));
-                        a.setDate(rs.getDate("dateCreated"));
-                        a.setEmpID(rs.getInt("employeeID"));
                         a.setCompany(rs.getString("company"));
+                        a.setName(rs.getString("itemName"));
+                        a.setPrice(rs.getDouble("price"));
+                        adverts.add(a);
                        
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                request.setAttribute("adverts", adverts);
+                
+                RequestDispatcher jsp = request.getRequestDispatcher("./buyItem.jsp");
+                jsp.forward(request, response);
+                return;
             }
             else {
             query = "SELECT * FROM Posts WHERE (Page = " +ID+ ") ORDER BY postdate DESC;";
