@@ -6,6 +6,7 @@
 package servlets;
 
 import beans.advertisementBean;
+import beans.mailingListBean;
 import beans.message;
 import entities.Employee;
 import entities.Posts;
@@ -106,13 +107,26 @@ public class employeeLogin extends HttpServlet {
                         rs.getString("itemName"), rs.getDate("dateCreated"), rs.getString("company"), rs.getString("content"), rs.getDouble("price"), rs.getInt("unitsAvailable")));
                         
                     }
-                
-                    // add user info to the session
+                ArrayList<mailingListBean> mail = new ArrayList<mailingListBean>();
+                String mailQuery = "SELECT * FROM user;";
+                    // add ads and mailing list info to the session
                     session.setAttribute("allAds", ads);
                 } catch (SQLException ex) {
                     Logger.getLogger(employeeLogin.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+                ArrayList<mailingListBean> mail = new ArrayList<mailingListBean>();
+                String mailQuery = "SELECT * FROM user;";
+                try{
+                ResultSet mQ = stmt.executeQuery(mailQuery);
+                    while (mQ.next()) {
+                        mail.add(new mailingListBean(mQ.getString("FirstName"), mQ.getString("LastName"), mQ.getString("EmailAddress")));
+                        
+                    }
+                session.setAttribute("mailingList", mail);}
+                catch (SQLException ex) {
+                    ex.printStackTrace();
+                    Logger.getLogger(employeeLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }}
             
         } 
 catch (SQLException ex) {

@@ -40,7 +40,7 @@
                 <input type='button' value = 'Record Transaction' onclick="location.href='./vibe/wall.jsp'">
             </div>
             <div>
-                <input type='button' value = 'Customer Information' onclick="location.href='./vibe/groups.jsp'">
+                <input type='button' value = 'Customer Information' onclick="location.href='./customerInfo.jsp'">
             </div>
             <div>
                 <input type='button' value = 'Best Seller List' onclick="location.href='./vibe/groups.jsp'">
